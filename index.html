@@ -9,28 +9,33 @@
 </head>
 <body>
   <div id="screen">
-    <div id="novel-screen">
+    <div id="novel-screen" class="screen-size">
       <div id="nv-big-img"></div>
       <div id="nv-char1"></div>
       <div id="nv-char2"></div>
       <div id="nv-blackout"></div>
       <div id="nv-bubble">
-        <div id="nv-text">ТЕКСТ</div>
-        <div id="nv-arrow"><div>></div></div>
+        <div id="nv-text-area">
+          <div>
+            <div id="nv-text">
+              ТЕКСТ В НЕСКОЛЬКО СТРОК
+            </div>
+            <div id="nv-arrow"><div>></div></div>
+          </div>
+        </div>
       </div>
       <div id="nv-effects"></div>
+      <div id="nv-click-detector" class="screen-size" onclick="showScene()"></div>
+      <div id="nv-click-protection" class="screen-size"></div>
     </div>
+
     <div id="date-screen">
-
     </div>
+
     <div id="menu-screen">
+    </div>
 
-    </div>
-    <div id="buttons">
-      <button onclick="changeBubble1()">Вариант 1</button>
-      <button onclick="changeBubble2()">Вариант 2</button>
-      <button onclick="changeBubble3()">Вариант 3</button>
-    </div>
+    <div id="start-screen" class="screen-size" onclick="startDemonstration()">НАЧАТЬ</div>
   </div>
 </body>
 </html>
