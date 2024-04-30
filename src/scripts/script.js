@@ -3,116 +3,98 @@ const requestAnimationFrame = window.requestAnimationFrame ||
   window.webkitRequestAnimationFrame ||
   window.msRequestAnimationFrame;
 
-const blockScreen = () => { 
-  const el = document.getElementById('nv-click-protection');
-  el.style.zIndex = '1100';
-}
-const freeScreen = () => {
-  const el = document.getElementById('nv-click-protection');
-  el.style.zIndex = '900';
-}
+const animFlags = Array(5).fill(false);
+const isAllAnimationsEnded = () => !animFlags.reduce((acc, flag) => (acc || flag), false);
 
-const show = (id) => {
-  const el = document.getElementById(id);
-  el.style.opacity = '0';
+let clickWhileAnimation = false;
 
-  let opacity = 0;
-  const step = 0.1;
+const skipAnimationOn = () => {
+  const elem = document.getElementById('nv-skip-animation');
+  elem.style.zIndex = '1100';
+};
+const skipAnimationOff = () => {
+  const elem = document.getElementById('nv-skip-animation');
+  elem.style.zIndex = '900';
+};
+
+const showElem = (id) => {
+  const elem = document.getElementById(id);
+  elem.style.visibility = 'visible';
+};
+const hideElem = (id) => {
+  const elem = document.getElementById(id);
+  elem.style.visibility = 'hidden';
+};
+
+const skipAnimation = () => {
+  if (!isAllAnimationsEnded()) {
+    clickWhileAnimation = true;
+  }
+};
+
+const animateParamChange = (id, param, i, start = 0, end = 1, speed = 0.2) => {
+  animFlags[i] = true;
+  const elem = document.getElementById(id);
+  elem.style[param] = `${start}`;
+
+  const step = (end - start) * speed;
+  const trustEnd = [end - step, end + step].sort((a, b) => a - b);
+  let curr = start;
 
   const animation = () => {
-    opacity += step;
-    el.style.opacity = `${opacity}`;
-    if (opacity < 1) requestAnimationFrame(animation);
-    if (opacity >= 1) freeScreen();
+    if (clickWhileAnimation ||
+      (curr > trustEnd[0] && curr < trustEnd[1])) {
+      elem.style[param] = `${end}`;
+      animFlags[i] = false;
+      return;
+    }
+    curr += step;
+    elem.style[param] = `${curr}`;
+    requestAnimationFrame(animation);
   }
   animation();
 };
-const hide = (id) => {
-  const el = document.getElementById(id);
-  el.style.opacity = '1';
 
-  let opacity = 0;
-  const step = -0.1;
+const animateLoopParamChange = (id, param, start = 0, range = 2, speed = 0.2) => {
+  const elem = document.getElementById(id);
+  const step = range * speed;
+  let currPos = 0;
+  let currStep = step;
 
   const animation = () => {
-    opacity += step;
-    el.style.opacity = `${opacity}`;
-    if (opacity > 0) requestAnimationFrame(animation);
+    if (currPos > range) currStep = -step;
+    if (currPos < -range) currStep = step;
+    currPos += currStep;
+    elem.style[param] = `${start + currPos}px`;
+    requestAnimationFrame(animation);
   }
   animation();
 };
 
-const animateArrow = () => {
-  let arrowPos = 0;
-  let arrowStep = 0.5;
-
-  const arrow = document.getElementById('nv-arrow');
-  const arrowStartPos = Number(window.getComputedStyle(arrow).bottom.slice(0, -2));
-
-  const arrowAnimation = () => {
-    if (arrowPos > 2) arrowStep = -0.5;
-    if (arrowPos < -2) arrowStep = 0.5;
-    arrowPos += arrowStep;
-    arrow.style.bottom = `${arrowPos + arrowStartPos}px`;
-    requestAnimationFrame(arrowAnimation);
-  }
-  arrowAnimation();
-}
-const showArrow = () => {
-  show('nv-arrow');
-  const arrow = document.getElementById('nv-arrow');
-  arrow.style.display = 'flex';
-}
-const hideArrow = () => {
-  const arrow = document.getElementById('nv-arrow');
-  arrow.style.display = 'none';
-}
-
-const showText = (text) => {
-  hideArrow();
+const animateTextIn = (id, text, i, step = 0.4) => {
+  animFlags[i] = true;
+  hideElem('nv-arrow');
+  const elem = document.getElementById(id);
 
   let currPos = 0;
-  let step = 0.4;
   let textPos = 0;
 
-  const textEl = document.getElementById('nv-text');
-
-  const textAnimation = () => {
+  const animation = () => {
+    if(clickWhileAnimation ||
+      currPos >= text.length) {
+      elem.innerHTML = text;
+      animFlags[i] = false;
+      animateParamChange('nv-arrow', 'opacity', i)
+      showElem('nv-arrow');
+      return;
+    }
     currPos += step;
     textPos = Math.floor(currPos);
-    textEl.innerHTML = text.slice(0, textPos) + `<span id="hidden-text">${text.slice(textPos)}</span>`;
-    if(currPos <= text.length) {
-      requestAnimationFrame(textAnimation);
-    }
-    if(currPos >= text.length) {
-      showArrow();
-    }
+    elem.innerHTML = text.slice(0, textPos) + `<span class="hidden-text">${text.slice(textPos)}</span>`;
+    requestAnimationFrame(animation);
   };
-  textAnimation();
+  animation();
 };
-
-const changeBubble1 = () => {
-  const el = document.getElementById('nv-bubble');
-  el.style.justifyContent = 'start';
-  el.style.height = '300px';
-  el.style.width = '200px';
-}
-
-const changeBubble2 = () => {
-  const el = document.getElementById('nv-bubble');
-  el.style.justifyContent = 'end';
-  el.style.height = '200px';
-  el.style.width = '200px';
-}
-
-const changeBubble3 = () => {
-  const el = document.getElementById('nv-bubble');
-  el.style.justifyContent = 'start';
-  el.style.height = '200px';
-  el.style.width = '300px';
-}
-
-
 
 const arr = [
   'пример текста 1',
@@ -122,11 +104,22 @@ const arr = [
 let currI = 0;
 
 const drawScene = (text) => {
-  blockScreen();
-  if(currI === 0) changeBubble1();
-  if(currI === 1) changeBubble2();
-  if(currI === 2) changeBubble3();
-  showText(text);
+  animFlags.forEach((_flag, i) => animFlags[i] = false);
+  clickWhileAnimation = false;
+  skipAnimationOn();
+
+  animateTextIn('nv-text', text, 0);
+
+  const offSkipAnimationAfterAllEnded = () =>{
+    if (isAllAnimationsEnded()) {
+      skipAnimationOff();
+      clickWhileAnimation = false;
+      return;
+    }
+    requestAnimationFrame(offSkipAnimationAfterAllEnded);
+  }
+  offSkipAnimationAfterAllEnded();
+
 };
 
 const showScene = () => {
@@ -140,10 +133,18 @@ const showScene = () => {
 }
 
 const startDemonstration = () => {
-  animateArrow();
+  
 
   const startScreen = document.getElementById('start-screen');
   startScreen.style.display = 'none';
 
   showScene();  
 }
+
+const animateArrow = () => {
+  const arrow = document.getElementById('nv-arrow');
+  const startPos = Number(window. getComputedStyle(arrow).bottom.slice(0, -2));
+  animateLoopParamChange('nv-arrow', 'bottom', startPos, 2);
+};
+
+window.onload = animateArrow;

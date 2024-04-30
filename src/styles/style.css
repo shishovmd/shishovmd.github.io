@@ -27,13 +27,13 @@ body {
     background: none;
 }
 
-#nv-click-detector{
+#nv-next-scene{
     z-index: 1000;
 }
-#nv-click-detector:hover{
+#nv-skip-animation:hover{
     cursor: pointer;
 }
-#nv-click-protection{
+#nv-skip-animation{
     z-index: 1100;
 }
 
@@ -87,6 +87,9 @@ body {
     position: absolute;
     bottom: -30px;
 }
+
+
+
 #nv-arrow > div{
     display: block;
     width: 16px;
@@ -98,7 +101,7 @@ body {
     transform: rotate(90deg);
 }
 
-#hidden-text{
+.hidden-text{
     color: #FFFFFF;
     opacity: 0;
 }
@@ -112,4 +115,31 @@ body {
 }
 #start-screen:hover{
     cursor: pointer;
+}
+
+.character-size{
+    width: 400px;
+    height: 500px;
+    position: absolute;
+}
+#nv-char0{
+    left: 200px;
+    background-color: coral;
+}
+#nv-char1{
+    left: 0px;
+    background-color: cadetblue;
+}
+#nv-char2{
+    right: 0px;
+    background-color: chartreuse;
+}
+
+#nv-blackout{
+    width: 100%;
+    height: 300px;
+    position: absolute;
+    bottom: 0px;
+    background-color: black;
+    opacity: 0.5;
 }
