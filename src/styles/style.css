@@ -60,6 +60,7 @@ body {
     justify-content: end;
     
     background-color: white;
+    z-index: 800;
 }
 #nv-text-area{
     width: 100%;
@@ -121,6 +122,7 @@ body {
     width: 400px;
     height: 500px;
     position: absolute;
+    z-index: 500;
 }
 #nv-char0{
     left: 200px;
@@ -142,4 +144,5 @@ body {
     bottom: 0px;
     background-color: black;
     opacity: 0.5;
+    z-index: 550;
 }

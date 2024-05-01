@@ -8,6 +8,16 @@ const isAllAnimationsEnded = () => !animFlags.reduce((acc, flag) => (acc || flag
 
 let clickWhileAnimation = false;
 
+let prevScene = '';
+let currScene = '';
+let nextScene = '';
+
+const readFile = (file) => {
+  fetch(`./src/scenes/${file}.txt`)
+  .then(response => response.text())
+  .then(text => console.log(text))
+}
+readFile('001');
 const skipAnimationOn = () => {
   const elem = document.getElementById('nv-skip-animation');
   elem.style.zIndex = '1100';
@@ -24,6 +34,22 @@ const showElem = (id) => {
 const hideElem = (id) => {
   const elem = document.getElementById(id);
   elem.style.visibility = 'hidden';
+};
+
+const setBgImg = (id, imgPath) =>{
+  const elem = document.getElementById(id);
+  elem.style.backgroundImage = `url("${imgPath}")`;
+  elem.style.backgroundColor= 'transparent';
+};
+const setBgColor = (id, color) =>{
+  const elem = document.getElementById(id);
+  elem.style.backgroundColor= color;
+  elem.style.backgroundImage = 'none';
+};
+
+const setZIndex = (id, zIndex) => {
+  const elem= document.getElementById(id);
+  elem.style.zIndex = `${zIndex}`;
 };
 
 const skipAnimation = () => {
@@ -103,12 +129,63 @@ const arr = [
 ].map((str) => str.toUpperCase());
 let currI = 0;
 
+const setBubble = (type) => {};
+
+const drawScene01 = (type, bg, chars, bubble, text) => {
+  const char1 = chars.split(';')[0];
+  const char2 = chars.split(';')[1] ?? '';
+
+  if (bg.startsWith('#')) {
+    setBgColor('novel-screen', bg);
+  } else {
+    setBgImg('novel-screen', `./src/images/backgrounds/${bg}.png`);
+  }
+
+  if(type[2] === '0' || type[2] === '3') {
+    if(type[2] === '0') {
+      setZIndex('nv-char0', 600);
+    } else {
+      setZIndex('nv-char0', 500);
+    }
+    hideElem('nv-char1');
+    hideElem('nv-char2');
+    setBgImg('nv-char0', `./src/images/characters/${char1.slice(0, 3)}/${char1.slice(3)}.png`);
+    showElem('nv-char0');
+  } else if(type[2] === '1' || type[2] === '2' || type[2] === '4') {
+    if(type[2] === '1') {
+      setZIndex('nv-char1', 600);
+      setZIndex('nv-char2', 500);
+    } else if(type[2] === '2') {
+      setZIndex('nv-char1', 500);
+      setZIndex('nv-char2', 600);
+    } else {
+      setZIndex('nv-char1', 500);
+      setZIndex('nv-char2', 500);
+    }
+    hideElem('nv-char0');
+    setBgImg('nv-char1', `./src/images/characters/${char1.slice(0, 3)}/${char1.slice(3)}.png`);
+    setBgImg('nv-char2', `./src/images/characters/${char2.slice(0, 3)}/${char2.slice(3)}.png`);
+    showElem('nv-char1');
+    showElem('nv-char2');
+  }
+
+  if(bubble === '') {
+    hideElem('nv-blackout');
+    hideElem('nv-bubble');
+  } else {
+    showElem('nv-blackout');
+    setBubble(bubble);
+    animateTextIn('nv-text', text, 0);
+    showElem('nv-bubble');
+  }
+};
+
 const drawScene = (text) => {
   animFlags.forEach((_flag, i) => animFlags[i] = false);
   clickWhileAnimation = false;
   skipAnimationOn();
 
-  animateTextIn('nv-text', text, 0);
+  drawScene01('012', '#A0B0CA', '001002;002001', '000', text);
 
   const offSkipAnimationAfterAllEnded = () =>{
     if (isAllAnimationsEnded()) {
@@ -146,5 +223,4 @@ const animateArrow = () => {
   const startPos = Number(window. getComputedStyle(arrow).bottom.slice(0, -2));
   animateLoopParamChange('nv-arrow', 'bottom', startPos, 2);
 };
-
 window.onload = animateArrow;
