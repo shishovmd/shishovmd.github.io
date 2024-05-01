@@ -12,12 +12,20 @@ let prevScene = '';
 let currScene = '';
 let nextScene = '';
 
-const readFile = (file) => {
-  fetch(`./src/scenes/${file}.txt`)
-  .then(response => response.text())
-  .then(text => console.log(text))
-}
-readFile('001');
+const fs = require('fs');
+fs.readFile('./src/scenes/001.txt', 'utf8', (err, data) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  console.log(data);
+});
+// const readFile = (file) => {
+//   fetch(`./src/scenes/${file}.txt`)
+//   .then(response => response.text())
+//   .then(text => console.log(text))
+// }
+// readFile('001')
 const skipAnimationOn = () => {
   const elem = document.getElementById('nv-skip-animation');
   elem.style.zIndex = '1100';
