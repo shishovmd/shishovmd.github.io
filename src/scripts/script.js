@@ -3,37 +3,32 @@ const requestAnimationFrame = window.requestAnimationFrame ||
   window.webkitRequestAnimationFrame ||
   window.msRequestAnimationFrame;
 
-const animFlags = Array(5).fill(false);
-const isAllAnimationsEnded = () => !animFlags.reduce((acc, flag) => (acc || flag), false);
+let flag1 = false;
+let flag2 = false;
+let flag3 = false;
+const isAllAnimationsEnded = () => !(flag1 || flag2 || flag3);
 
-let clickWhileAnimation = false;
+let textSkip = false;
+const skipTextAnimation = () => {
+  textSkip = true;
+};
+
+let drawNext = false;
+const drawNextScene = () => {
+  drawNext = true;
+};
+
+const readFile = (file) => {
+  fetch(`./src/scenes/${file}.txt`)
+  .then(response => response.text())
+  .then(text => console.log(text))
+}
+readFile('001');
 
 let prevScene = '';
 let currScene = '';
 let nextScene = '';
 
-const fs = require('fs');
-fs.readFile('./src/scenes/001.txt', 'utf8', (err, data) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
-  console.log(data);
-});
-// const readFile = (file) => {
-//   fetch(`./src/scenes/${file}.txt`)
-//   .then(response => response.text())
-//   .then(text => console.log(text))
-// }
-// readFile('001')
-const skipAnimationOn = () => {
-  const elem = document.getElementById('nv-skip-animation');
-  elem.style.zIndex = '1100';
-};
-const skipAnimationOff = () => {
-  const elem = document.getElementById('nv-skip-animation');
-  elem.style.zIndex = '900';
-};
 
 const showElem = (id) => {
   const elem = document.getElementById(id);
@@ -47,12 +42,10 @@ const hideElem = (id) => {
 const setBgImg = (id, imgPath) =>{
   const elem = document.getElementById(id);
   elem.style.backgroundImage = `url("${imgPath}")`;
-  elem.style.backgroundColor= 'transparent';
 };
 const setBgColor = (id, color) =>{
   const elem = document.getElementById(id);
   elem.style.backgroundColor= color;
-  elem.style.backgroundImage = 'none';
 };
 
 const setZIndex = (id, zIndex) => {
@@ -60,14 +53,8 @@ const setZIndex = (id, zIndex) => {
   elem.style.zIndex = `${zIndex}`;
 };
 
-const skipAnimation = () => {
-  if (!isAllAnimationsEnded()) {
-    clickWhileAnimation = true;
-  }
-};
-
-const animateParamChange = (id, param, i, start = 0, end = 1, speed = 0.2) => {
-  animFlags[i] = true;
+const animateParamChange = (id, param, flag, start = 0, end = 1, speed = 0.2) => {
+  flag = true;
   const elem = document.getElementById(id);
   elem.style[param] = `${start}`;
 
@@ -76,10 +63,9 @@ const animateParamChange = (id, param, i, start = 0, end = 1, speed = 0.2) => {
   let curr = start;
 
   const animation = () => {
-    if (clickWhileAnimation ||
-      (curr > trustEnd[0] && curr < trustEnd[1])) {
+    if (curr > trustEnd[0] && curr < trustEnd[1]) {
       elem.style[param] = `${end}`;
-      animFlags[i] = false;
+      flag = false;
       return;
     }
     curr += step;
@@ -105,20 +91,23 @@ const animateLoopParamChange = (id, param, start = 0, range = 2, speed = 0.2) =>
   animation();
 };
 
-const animateTextIn = (id, text, i, step = 0.4) => {
-  animFlags[i] = true;
+const animateTextIn = (id, text, flag, step = 0.4) => {
+  flag = true;
   hideElem('nv-arrow');
+  textSkip = false;
+  setZIndex('nv-text-skip', 1200);
   const elem = document.getElementById(id);
 
   let currPos = 0;
   let textPos = 0;
 
   const animation = () => {
-    if(clickWhileAnimation ||
-      currPos >= text.length) {
+    if(textSkip || currPos >= text.length) {
+      textSkip = false;
+      setZIndex('nv-text-skip', 0);
       elem.innerHTML = text;
-      animFlags[i] = false;
-      animateParamChange('nv-arrow', 'opacity', i)
+      flag = false;
+      animateParamChange('nv-arrow', 'opacity', flag)
       showElem('nv-arrow');
       return;
     }
@@ -183,52 +172,48 @@ const drawScene01 = (type, bg, chars, bubble, text) => {
   } else {
     showElem('nv-blackout');
     setBubble(bubble);
-    animateTextIn('nv-text', text, 0);
+    animateTextIn('nv-text', text, flag1);
     showElem('nv-bubble');
   }
 };
 
 const drawScene = (text) => {
-  animFlags.forEach((_flag, i) => animFlags[i] = false);
-  clickWhileAnimation = false;
-  skipAnimationOn();
-
+  setZIndex('nv-no-clicks', 1100);
   drawScene01('012', '#A0B0CA', '001002;002001', '000', text);
-
-  const offSkipAnimationAfterAllEnded = () =>{
-    if (isAllAnimationsEnded()) {
-      skipAnimationOff();
-      clickWhileAnimation = false;
+  const wait = () => {
+    if (isAllAnimationsEnded) {
       return;
     }
-    requestAnimationFrame(offSkipAnimationAfterAllEnded);
-  }
-  offSkipAnimationAfterAllEnded();
-
+    requestAnimationFrame(wait);
+  };
+  wait();
+  setZIndex('nv-no-clicks', 0);
 };
 
-const showScene = () => {
-  if (currI >= arr.length) {
-    const startScreen = document.getElementById('start-screen');
-    startScreen.innerHTML = 'ПЕРЕЗАГРУЗИТЕ, ЧТОБЫ ПОПРБОВАТЬ ЗАНОВО';
-    startScreen.style.display = 'flex';
+const loop = () => {
+  if (drawNext) {
+    drawNext = false;
+    drawScene(arr[currI]);
+    currI += 1;
   }
-  drawScene(arr[currI]);
-  currI += 1;
-}
+  requestAnimationFrame(loop);
+};
 
 const startDemonstration = () => {
   
 
   const startScreen = document.getElementById('start-screen');
   startScreen.style.display = 'none';
+  drawNext = true;
 
-  showScene();  
+  loop();  
 }
+
+
 
 const animateArrow = () => {
   const arrow = document.getElementById('nv-arrow');
-  const startPos = Number(window. getComputedStyle(arrow).bottom.slice(0, -2));
+  const startPos = Number(window.getComputedStyle(arrow).bottom.slice(0, -2));
   animateLoopParamChange('nv-arrow', 'bottom', startPos, 2);
 };
 window.onload = animateArrow;

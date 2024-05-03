@@ -30,11 +30,14 @@ body {
 #nv-next-scene{
     z-index: 1000;
 }
-#nv-skip-animation:hover{
-    cursor: pointer;
+#nv-no-clicks{
+    z-index: 0;
 }
-#nv-skip-animation{
-    z-index: 1100;
+#nv-text-skip{
+    z-index: 0;
+}
+#nv-next-scene:hover{
+    cursor: pointer;
 }
 
 #screen {
@@ -122,19 +125,17 @@ body {
     width: 400px;
     height: 500px;
     position: absolute;
+    background-color:transparent;
     z-index: 500;
 }
 #nv-char0{
     left: 200px;
-    background-color: coral;
 }
 #nv-char1{
     left: 0px;
-    background-color: cadetblue;
 }
 #nv-char2{
     right: 0px;
-    background-color: chartreuse;
 }
 
 #nv-blackout{
@@ -145,4 +146,12 @@ body {
     background-color: black;
     opacity: 0.5;
     z-index: 550;
+}
+
+.hidden{
+    position: absolute;
+    height: 1px;
+    width: 1px;
+    background: none;
+    visibility:hidden;
 }

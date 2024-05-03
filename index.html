@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Explosive Attraction</title>
   <link rel="stylesheet" href="src/styles/style.css">
-  <script src="src/scripts/script.js"></script>
+  <script src="./src/scripts/script.js"></script>
+  <script src="./scene001.js"></script>
 </head>
 <body>
   <div id="screen">
@@ -26,14 +27,15 @@
         </div>
       </div>
       <div id="nv-effects" class="screen-size"></div>
-      <div id="nv-next-scene" class="screen-size" onclick="showScene()"></div>
-      <div id="nv-skip-animation" class="screen-size" onclick="skipAnimation()"></div>
+      <div id="nv-next-scene" class="screen-size" onclick="drawNextScene()"></div>
+      <div id="nv-no-clicks" class="screen-size"></div>
+      <div id="nv-text-skip" class="screen-size" onclick="skipTextAnimation()"></div>
     </div>
 
     <div id="date-screen">
     </div>
 
-    <div id="menu-screen">
+    <div id="menu-screen" onclick="scenesone()">
     </div>
 
     <div id="start-screen" class="screen-size" onclick="startDemonstration()">НАЧАТЬ</div>
