@@ -3,6 +3,43 @@ const requestAnimationFrame = window.requestAnimationFrame ||
   window.webkitRequestAnimationFrame ||
   window.msRequestAnimationFrame;
 
+let fileLines = [];
+let prevScene = '';
+let currScene = '';
+let nextScene = '';
+let currLine = 0;
+
+const readFile = (name, runAfter = () => {}) => {
+  fileReaded = false;
+  fetch(`./src/scenes/${name}.txt`)
+  .then(response => response.text())
+  .then(text => { 
+    fileLines = text.split('\n').map((line) => line.trim());
+    runAfter();
+  });
+};
+
+const getNextScene = (runAfter = () => {}) => {
+  const nextScenePath = currScene.split('_')[0];
+  if (nextScenePath === '') {
+    currLine += 1;
+    currScene = fileLines[currLine];
+    runAfter();
+    return;
+  }
+  if (nextScenePath.includes(';')) {
+    readFile(nextScenePath.split(';')[0], () => {
+      currLine = Number(nextScenePath.split(';')[1]);
+      currScene = fileLines[currLine];
+      runAfter();
+    });
+    return;
+  }
+  currLine = Number(nextScenePath);
+  currScene = fileLines[currLine];
+  runAfter();
+};
+
 let flag1 = false;
 let flag2 = false;
 let flag3 = false;
@@ -18,16 +55,6 @@ const drawNextScene = () => {
   drawNext = true;
 };
 
-const readFile = (file) => {
-  fetch(`./src/scenes/${file}.txt`)
-  .then(response => response.text())
-  .then(text => console.log(text))
-}
-readFile('001');
-
-let prevScene = '';
-let currScene = '';
-let nextScene = '';
 
 
 const showElem = (id) => {
@@ -182,19 +209,20 @@ const drawScene = (text) => {
   drawScene01('012', '#A0B0CA', '001002;002001', '000', text);
   const wait = () => {
     if (isAllAnimationsEnded) {
+      setZIndex('nv-no-clicks', 0);
       return;
     }
     requestAnimationFrame(wait);
   };
   wait();
-  setZIndex('nv-no-clicks', 0);
 };
 
 const loop = () => {
   if (drawNext) {
     drawNext = false;
-    drawScene(arr[currI]);
-    currI += 1;
+    getNextScene(() => {
+      drawScene(currScene.split('_')[5].toUpperCase());
+    });
   }
   requestAnimationFrame(loop);
 };
@@ -204,9 +232,13 @@ const startDemonstration = () => {
 
   const startScreen = document.getElementById('start-screen');
   startScreen.style.display = 'none';
-  drawNext = true;
+  readFile('001', () => { 
+    currScene = fileLines[currLine];
+    drawNext = true;
+    loop(); 
+  });
 
-  loop();  
+   
 }
 
 
