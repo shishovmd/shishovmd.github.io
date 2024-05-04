@@ -158,9 +158,7 @@ const drawScene01 = (longType, bg, chars, bubble, text) => {
   } else {
     setParam('novel-screen', 'backgroundImage', `url("./src/images/backgrounds/${bg}.png")`);
   }
-
-  animateParamChange('nv-bubble', 'opacity', 1, '', 1, 0, 0.1);
-
+  
   if(type === '0' || type === '3') {
     if(type === '0') {
       setParam('nv-char0', 'zIndex', 600);
@@ -171,16 +169,16 @@ const drawScene01 = (longType, bg, chars, bubble, text) => {
     hideElem('nv-char2');
     setParam('nv-char0', 'backgroundImage', `url("./src/images/characters/${char1.slice(0, 3)}/${char1.slice(3)}.png")`);
     showElem('nv-char0');
-    animateParamJump('nv-char0', 'top', 2, 'px', 0, -10);
+    animateParamJump('nv-char0', 'top', 2, 'px', 0, -10, 0.15);
   } else if(type === '1' || type === '2' || type === '4') {
     if(type === '1') {
       setParam('nv-char1', 'zIndex', 600);
-      animateParamJump('nv-char1', 'top', 2, 'px', 0, -10);
+      animateParamJump('nv-char1', 'top', 2, 'px', 0, -10, 0.15);
       setParam('nv-char2', 'zIndex', 500);
     } else if(type === '2') {
       setParam('nv-char1', 'zIndex', 500);
       setParam('nv-char2', 'zIndex', 600);
-      animateParamJump('nv-char2', 'top', 2, 'px', 0, -10);
+      animateParamJump('nv-char2', 'top', 2, 'px', 0, -10, 0.15);
     } else {
       setParam('nv-char1', 'zIndex', 500);
       setParam('nv-char2', 'zIndex', 500);
@@ -194,10 +192,8 @@ const drawScene01 = (longType, bg, chars, bubble, text) => {
 
   if(bubble === '') {
     hideElem('nv-blackout');
-    hideElem('nv-bubble');
   } else {
     showElem('nv-blackout');
-    hideElem('nv-bubble');
     hideElem('nv-arrow');
     setBubble(bubble);
     setInnerHTML('nv-text', '');
@@ -215,13 +211,17 @@ const drawScene = (scene) => {
   setParam('nv-no-clicks', 'zIndex', 1100);
   const type = scene.split('_')[1]
 
-  switch (type.split('-')[0]) {
-    case '01':
-      drawScene01(...scene.split('_').slice(1));
-      break;
-    default:
-      console.log('Error!')
-  }
+  animateParamChange('nv-bubble', 'opacity', 1, '', 1, 0, 0.1, () => {
+    hideElem('nv-bubble');
+    hideElem('nv-arrow');
+    switch (type.split('-')[0]) {
+      case '01':
+        drawScene01(...scene.split('_').slice(1));
+        break;
+      default:
+        console.log('Error!')
+    }
+  });
 
   const wait = () => {
     if (isAllAnimationsEnded()) {
