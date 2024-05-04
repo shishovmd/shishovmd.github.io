@@ -38,7 +38,7 @@ const getNextScene = (runAfter = () => {}) => {
   runAfter();
 };
 
-const flags = Array(5).fill(false);
+const flags = Array(6).fill(false);
 const isAllAnimationsEnded = () => !flags.reduce((acc, flag) => flag || acc);
 
 let textSkip = false;
@@ -162,14 +162,15 @@ const drawScene01 = (longType, bg, chars, bubble, text) => {
   if(type === '0' || type === '3') {
     if(type === '0') {
       setParam('nv-char0', 'zIndex', 600);
+      animateParamJump('nv-char0', 'top', 2, 'px', 0, -10, 0.15);
     } else {
       setParam('nv-char0', 'zIndex', 500);
     }
+    hideElem('nv-big-img');
     hideElem('nv-char1');
     hideElem('nv-char2');
     setParam('nv-char0', 'backgroundImage', `url("./src/images/characters/${char1.slice(0, 3)}/${char1.slice(3)}.png")`);
     showElem('nv-char0');
-    animateParamJump('nv-char0', 'top', 2, 'px', 0, -10, 0.15);
   } else if(type === '1' || type === '2' || type === '4') {
     if(type === '1') {
       setParam('nv-char1', 'zIndex', 600);
@@ -183,18 +184,31 @@ const drawScene01 = (longType, bg, chars, bubble, text) => {
       setParam('nv-char1', 'zIndex', 500);
       setParam('nv-char2', 'zIndex', 500);
     }
+    hideElem('nv-big-img');
     hideElem('nv-char0');
     setParam('nv-char1', 'backgroundImage', `url("./src/images/characters/${char1.slice(0, 3)}/${char1.slice(3)}.png")`);
     setParam('nv-char2', 'backgroundImage', `url("./src/images/characters/${char2.slice(0, 3)}/${char2.slice(3)}.png")`);
     showElem('nv-char1');
     showElem('nv-char2');
+  } else if (type === '5' || type === '6') {
+    if(type === '5') {
+      setParam('nv-big-img', 'zIndex', 600);
+      animateParamJump('nv-big-img', 'top', 2, 'px', 0, -10, 0.15);
+    } else {
+      setParam('nv-big-img', 'zIndex', 500);
+    }
+    hideElem('nv-char0');
+    hideElem('nv-char1');
+    hideElem('nv-char2');
+    setParam('nv-big-img', 'backgroundImage', `url("./src/images/characters/${char1.slice(0, 3)}/${char1.slice(3)}.png")`);
+    showElem('nv-big-img');
   }
 
   if(bubble === '') {
     hideElem('nv-blackout');
+    drawNext = true;  
   } else {
     showElem('nv-blackout');
-    hideElem('nv-arrow');
     setBubble(bubble);
     setInnerHTML('nv-text', '');
     animateParamChange('nv-bubble', 'opacity', 3, '', 0, 1, 0.1);
@@ -207,6 +221,25 @@ const drawScene01 = (longType, bg, chars, bubble, text) => {
   flags[0] = false;
 };
 
+const drawScene02 = (longType, blackout) => {
+  flags[0] = true;
+  const type = longType.split('-')[1];
+
+  const start = type === '0' ? 0 : 1;
+  const end = type === '0' ? 1 : 0;
+
+  if (blackout.startsWith('#')) {
+    setParam('nv-effects', 'backgroundColor', blackout);
+  } else {
+    setParam('nv-effects', 'backgroundImage', `url("./src/images/backgrounds/${blackout}.png")`);
+  }
+ 
+  animateParamChange('nv-effects', 'opacity', 1, '', start, end, 0.03, () => {
+    drawNext = true;
+    flags[0] = false;
+  });
+}
+
 const drawScene = (scene) => {
   setParam('nv-no-clicks', 'zIndex', 1100);
   const type = scene.split('_')[1]
@@ -217,6 +250,9 @@ const drawScene = (scene) => {
     switch (type.split('-')[0]) {
       case '01':
         drawScene01(...scene.split('_').slice(1));
+        break;
+      case '02':
+        drawScene02(...scene.split('_').slice(1));
         break;
       default:
         console.log('Error!')
@@ -245,20 +281,16 @@ const loop = () => {
 };
 
 const startDemonstration = () => {
-  
-
   const startScreen = document.getElementById('start-screen');
-  startScreen.style.display = 'none';
+  hideElem('nv-bubble');
   readFile('001', () => { 
     currScene = fileLines[currLine];
     drawNext = true;
-    loop(); 
+    loop();
+    hideElem('start-screen');
+    startScreen.style.zIndex = '-10';
   });
-
-   
 }
-
-
 
 const animateArrow = () => {
   const arrow = document.getElementById('nv-arrow');
