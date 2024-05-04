@@ -3,11 +3,9 @@ const requestAnimationFrame = window.requestAnimationFrame ||
   window.webkitRequestAnimationFrame ||
   window.msRequestAnimationFrame;
 
-let fileLines = [];
-let prevScene = '';
-let currScene = '';
-let nextScene = '';
-let currLine = 0;
+var fileLines = [];
+var currScene = '';
+var currLine = 0;
 
 const readFile = (name, runAfter = () => {}) => {
   fileReaded = false;
@@ -40,10 +38,8 @@ const getNextScene = (runAfter = () => {}) => {
   runAfter();
 };
 
-let flag1 = false;
-let flag2 = false;
-let flag3 = false;
-const isAllAnimationsEnded = () => !(flag1 || flag2 || flag3);
+const flags = Array(5).fill(false);
+const isAllAnimationsEnded = () => !flags.reduce((acc, flag) => flag || acc);
 
 let textSkip = false;
 const skipTextAnimation = () => {
@@ -55,8 +51,6 @@ const drawNextScene = () => {
   drawNext = true;
 };
 
-
-
 const showElem = (id) => {
   const elem = document.getElementById(id);
   elem.style.visibility = 'visible';
@@ -65,25 +59,24 @@ const hideElem = (id) => {
   const elem = document.getElementById(id);
   elem.style.visibility = 'hidden';
 };
-
-const setBgImg = (id, imgPath) =>{
+const isVisible = (id) => {
   const elem = document.getElementById(id);
-  elem.style.backgroundImage = `url("${imgPath}")`;
-};
-const setBgColor = (id, color) =>{
-  const elem = document.getElementById(id);
-  elem.style.backgroundColor= color;
+  return window.getComputedStyle().visibility === 'visible';
 };
 
-const setZIndex = (id, zIndex) => {
+const setParam = (id, param, value) => {
   const elem= document.getElementById(id);
-  elem.style.zIndex = `${zIndex}`;
+  elem.style[param] = `${value}`;
+};
+const setInnerHTML = (id, text) => {
+  const elem= document.getElementById(id);
+  elem.innerHTML = text;
 };
 
-const animateParamChange = (id, param, flag, start = 0, end = 1, speed = 0.2) => {
-  flag = true;
+const animateParamChange = (id, param, i, units = '', start = 0, end = 1, speed = 0.2, runAfter = () => {}) => {
+  flags[i] = true;
   const elem = document.getElementById(id);
-  elem.style[param] = `${start}`;
+  elem.style[param] = `${start}${units}`;
 
   const step = (end - start) * speed;
   const trustEnd = [end - step, end + step].sort((a, b) => a - b);
@@ -91,18 +84,25 @@ const animateParamChange = (id, param, flag, start = 0, end = 1, speed = 0.2) =>
 
   const animation = () => {
     if (curr > trustEnd[0] && curr < trustEnd[1]) {
-      elem.style[param] = `${end}`;
-      flag = false;
+      elem.style[param] = `${end}${units}`;
+      runAfter();
+      flags[i] = false;
       return;
     }
     curr += step;
-    elem.style[param] = `${curr}`;
+    elem.style[param] = `${curr}${units}`;
     requestAnimationFrame(animation);
   }
   animation();
 };
 
-const animateLoopParamChange = (id, param, start = 0, range = 2, speed = 0.2) => {
+const animateParamJump = (id, param, i, units = '', start = 0, range = 1, speed = 0.2, runAfter = () => {}) => {
+  animateParamChange(id, param, i, units, start, start + range, speed, () => {
+    animateParamChange(id, param, i, units, start + range, start, speed, runAfter());
+  });
+};
+
+const animateLoopParamChange = (id, param, units = '', start = 0, range = 2, speed = 0.2) => {
   const elem = document.getElementById(id);
   const step = range * speed;
   let currPos = 0;
@@ -112,17 +112,17 @@ const animateLoopParamChange = (id, param, start = 0, range = 2, speed = 0.2) =>
     if (currPos > range) currStep = -step;
     if (currPos < -range) currStep = step;
     currPos += currStep;
-    elem.style[param] = `${start + currPos}px`;
+    elem.style[param] = `${start + currPos}${units}`;
     requestAnimationFrame(animation);
   }
   animation();
 };
 
-const animateTextIn = (id, text, flag, step = 0.4) => {
-  flag = true;
+const animateTextIn = (id, text, i, step = 0.4, runAfter = () => {}) => {
+  flags[i] = true;
   hideElem('nv-arrow');
   textSkip = false;
-  setZIndex('nv-text-skip', 1200);
+  setParam('nv-text-skip', 'zIndex', 1200);
   const elem = document.getElementById(id);
 
   let currPos = 0;
@@ -131,11 +131,10 @@ const animateTextIn = (id, text, flag, step = 0.4) => {
   const animation = () => {
     if(textSkip || currPos >= text.length) {
       textSkip = false;
-      setZIndex('nv-text-skip', 0);
+      setParam('nv-text-skip', 'zIndex', 0);
       elem.innerHTML = text;
-      flag = false;
-      animateParamChange('nv-arrow', 'opacity', flag)
-      showElem('nv-arrow');
+      runAfter();
+      flags[i] = false;
       return;
     }
     currPos += step;
@@ -146,49 +145,49 @@ const animateTextIn = (id, text, flag, step = 0.4) => {
   animation();
 };
 
-const arr = [
-  'пример текста 1',
-  'второй пример текста',
-  'пример текста номер три',
-].map((str) => str.toUpperCase());
-let currI = 0;
-
 const setBubble = (type) => {};
 
-const drawScene01 = (type, bg, chars, bubble, text) => {
+const drawScene01 = (longType, bg, chars, bubble, text) => {
+  flags[0] = true;
+  const type = longType.split('-')[1];
   const char1 = chars.split(';')[0];
   const char2 = chars.split(';')[1] ?? '';
 
   if (bg.startsWith('#')) {
-    setBgColor('novel-screen', bg);
+    setParam('novel-screen', 'backgroundColor', bg);
   } else {
-    setBgImg('novel-screen', `./src/images/backgrounds/${bg}.png`);
+    setParam('novel-screen', 'backgroundImage', `url("./src/images/backgrounds/${bg}.png")`);
   }
 
-  if(type[2] === '0' || type[2] === '3') {
-    if(type[2] === '0') {
-      setZIndex('nv-char0', 600);
+  animateParamChange('nv-bubble', 'opacity', 1, '', 1, 0, 0.1);
+
+  if(type === '0' || type === '3') {
+    if(type === '0') {
+      setParam('nv-char0', 'zIndex', 600);
     } else {
-      setZIndex('nv-char0', 500);
+      setParam('nv-char0', 'zIndex', 500);
     }
     hideElem('nv-char1');
     hideElem('nv-char2');
-    setBgImg('nv-char0', `./src/images/characters/${char1.slice(0, 3)}/${char1.slice(3)}.png`);
+    setParam('nv-char0', 'backgroundImage', `url("./src/images/characters/${char1.slice(0, 3)}/${char1.slice(3)}.png")`);
     showElem('nv-char0');
-  } else if(type[2] === '1' || type[2] === '2' || type[2] === '4') {
-    if(type[2] === '1') {
-      setZIndex('nv-char1', 600);
-      setZIndex('nv-char2', 500);
-    } else if(type[2] === '2') {
-      setZIndex('nv-char1', 500);
-      setZIndex('nv-char2', 600);
+    animateParamJump('nv-char0', 'top', 2, 'px', 0, -10);
+  } else if(type === '1' || type === '2' || type === '4') {
+    if(type === '1') {
+      setParam('nv-char1', 'zIndex', 600);
+      animateParamJump('nv-char1', 'top', 2, 'px', 0, -10);
+      setParam('nv-char2', 'zIndex', 500);
+    } else if(type === '2') {
+      setParam('nv-char1', 'zIndex', 500);
+      setParam('nv-char2', 'zIndex', 600);
+      animateParamJump('nv-char2', 'top', 2, 'px', 0, -10);
     } else {
-      setZIndex('nv-char1', 500);
-      setZIndex('nv-char2', 500);
+      setParam('nv-char1', 'zIndex', 500);
+      setParam('nv-char2', 'zIndex', 500);
     }
     hideElem('nv-char0');
-    setBgImg('nv-char1', `./src/images/characters/${char1.slice(0, 3)}/${char1.slice(3)}.png`);
-    setBgImg('nv-char2', `./src/images/characters/${char2.slice(0, 3)}/${char2.slice(3)}.png`);
+    setParam('nv-char1', 'backgroundImage', `url("./src/images/characters/${char1.slice(0, 3)}/${char1.slice(3)}.png")`);
+    setParam('nv-char2', 'backgroundImage', `url("./src/images/characters/${char2.slice(0, 3)}/${char2.slice(3)}.png")`);
     showElem('nv-char1');
     showElem('nv-char2');
   }
@@ -198,18 +197,35 @@ const drawScene01 = (type, bg, chars, bubble, text) => {
     hideElem('nv-bubble');
   } else {
     showElem('nv-blackout');
+    hideElem('nv-bubble');
+    hideElem('nv-arrow');
     setBubble(bubble);
-    animateTextIn('nv-text', text, flag1);
+    setInnerHTML('nv-text', '');
+    animateParamChange('nv-bubble', 'opacity', 3, '', 0, 1, 0.1);
     showElem('nv-bubble');
+    animateTextIn('nv-text', text.toUpperCase(), 4, 0.4, () => {
+      animateParamChange('nv-arrow', 'opacity', 5);
+      showElem('nv-arrow');
+    });
   }
+  flags[0] = false;
 };
 
-const drawScene = (text) => {
-  setZIndex('nv-no-clicks', 1100);
-  drawScene01('012', '#A0B0CA', '001002;002001', '000', text);
+const drawScene = (scene) => {
+  setParam('nv-no-clicks', 'zIndex', 1100);
+  const type = scene.split('_')[1]
+
+  switch (type.split('-')[0]) {
+    case '01':
+      drawScene01(...scene.split('_').slice(1));
+      break;
+    default:
+      console.log('Error!')
+  }
+
   const wait = () => {
-    if (isAllAnimationsEnded) {
-      setZIndex('nv-no-clicks', 0);
+    if (isAllAnimationsEnded()) {
+      setParam('nv-no-clicks', 'zIndex', 0);
       return;
     }
     requestAnimationFrame(wait);
@@ -220,8 +236,9 @@ const drawScene = (text) => {
 const loop = () => {
   if (drawNext) {
     drawNext = false;
+    setParam('nv-no-clicks', 'zIndex', 1100);
     getNextScene(() => {
-      drawScene(currScene.split('_')[5].toUpperCase());
+      drawScene(currScene);
     });
   }
   requestAnimationFrame(loop);
@@ -246,6 +263,6 @@ const startDemonstration = () => {
 const animateArrow = () => {
   const arrow = document.getElementById('nv-arrow');
   const startPos = Number(window.getComputedStyle(arrow).bottom.slice(0, -2));
-  animateLoopParamChange('nv-arrow', 'bottom', startPos, 2);
+  animateLoopParamChange('nv-arrow', 'bottom', 'px', startPos, 2);
 };
 window.onload = animateArrow;

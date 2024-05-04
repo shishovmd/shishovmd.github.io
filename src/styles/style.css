@@ -36,7 +36,7 @@ body {
 #nv-text-skip{
     z-index: 0;
 }
-#nv-next-scene:hover{
+#nv-no-clicks:hover{
     cursor: pointer;
 }
 
@@ -125,6 +125,7 @@ body {
     width: 400px;
     height: 500px;
     position: absolute;
+    top: 0px;
     background-color:transparent;
     z-index: 500;
 }
