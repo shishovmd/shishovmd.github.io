@@ -10,6 +10,11 @@
     padding: 0;
     border: 0;
     z-index: 0;
+    background-size: cover;
+}
+
+html {
+    font-size: 1px;
 }
 
 body {
@@ -18,13 +23,15 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 16px;
 }
 
 .screen-size{
     height: 450px;
     width: 800px;
     position: absolute;
-    background: none;
+    background-color: transparent;
+    background-image: none;
 }
 
 #nv-next-scene{
@@ -50,17 +57,17 @@ body {
 
 #nv-bubble {
     box-sizing: border-box;
-    width: 200px;
-    height: 300px;
+    width: 300px;
+    height: 200px;
     padding: 50px;
 
     position:absolute;
-    top: 50px;
-    left: 50px;
+    top: 200px;
+    left: 250px;
 
     display: flex;
     flex-direction: column;
-    justify-content: end;
+    justify-content: center;
     
     background-color: white;
     z-index: 800;
@@ -148,7 +155,7 @@ body {
     height: 300px;
     position: absolute;
     bottom: 0px;
-    background-color: black;
+    background: linear-gradient(#00000000, #000000);
     opacity: 0.5;
     z-index: 550;
 }
