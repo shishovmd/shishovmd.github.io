@@ -81,6 +81,16 @@ const setChar = (id, char) => {
   const [dir, emot] = char.split('-');
   elem.style.backgroundImage = `url("./src/images/characters/${dir}/${emot}.png")`;
 };
+setBg = (id, bg) => {
+  const elem = document.getElementById(id);
+  if (bg.startsWith('#')) {
+    elem.style.backgroundColor = bg;
+    elem.style.backgroundImage = 'none';
+  } else {
+    elem.style.backgroundImage = `url("./src/images/backgrounds/${bg}.png")`;
+    elem.style.backgroundColor = 'transparent';
+  }
+}
 
 const animateParamChange = (id, param, i, units = '', start = 0, end = 1, speed = 0.2, runAfter = () => {}) => {
   flags[i] = true;
@@ -160,13 +170,7 @@ const drawScene00 = (longType, bg, chars) => {
   flags[0] = true;
   const [char1, char2] = chars.split(';');
   
-  if (bg.startsWith('#')) {
-    setParam('novel-screen', 'backgroundColor', bg);
-    setParam('novel-screen', 'backgroundImage', 'none');
-  } else {
-    setParam('novel-screen', 'backgroundImage', `url("./src/images/backgrounds/${bg}.png")`);
-    setParam('novel-screen', 'backgroundColor', 'transparent');
-  }
+  setBg('novel-screen', bg);
 
   hideElem('nv-blackout');
   if (char1 === '') {
@@ -189,11 +193,13 @@ const drawScene00 = (longType, bg, chars) => {
   flags[0] = false;
 };
 
-const drawScene01 = (longType, chars, bubble, text) => {
+const drawScene01 = (longType, bg, chars, bubble, text) => {
   flags[0] = true;
   const type = longType.split('-')[1];
   const [char1, char2] = chars.split(';');
   let charToJump = 'hidden-elem';
+
+  setBg('novel-screen', bg);
 
   if (char2 === '') {
     hideElem('nv-char1');
@@ -241,14 +247,13 @@ const drawScene01 = (longType, chars, bubble, text) => {
     }
     setBubble(bubble);
     setInnerHTML('nv-text', '');
-    animateParamJump(charToJump, 'top', 1, 'px', 0, -10, 0.15, () => {
-      animateParamChange('nv-bubble', 'opacity', 2, '', 0, 1, 0.1);
-      showElem('nv-bubble');
-      animateTextIn('nv-text', text.toUpperCase(), 3, 0.4, () => {
-        animateParamChange('nv-arrow', 'opacity', 4);
-        showElem('nv-arrow');
-        flags[0] = false;
-      });
+    animateParamJump(charToJump, 'top', 1, 'px', 0, -10, 0.15);
+    animateParamChange('nv-bubble', 'opacity', 2, '', 0, 1, 0.1);
+    showElem('nv-bubble');
+    animateTextIn('nv-text', text.toUpperCase(), 3, 0.4, () => {
+      animateParamChange('nv-arrow', 'opacity', 4);
+      showElem('nv-arrow');
+      flags[0] = false;
     });
   }
 };
@@ -282,11 +287,12 @@ const drawScene02 = (longType, blackout) => {
   } 
 };
 
-const drawScene03 = (longType, chars) => {
+const drawScene03 = (longType, bg, chars) => {
   flags[0] = true;
   const type = longType.split('-')[1];
   const [char1, char2] = chars.split(';');
 
+  setBg('novel-screen', bg);
   hideElem('nv-blackout');
 
   if (type === '0') {
@@ -349,11 +355,12 @@ const drawScene03 = (longType, chars) => {
   }
 };
 
-const drawScene04 = (longType, chars) => {
+const drawScene04 = (longType, bg, chars) => {
   flags[0] = true;
   const type = longType.split('-')[1];
   const [char1, char2] = chars.split(';');
-
+  
+  setBg('novel-screen', bg);
   hideElem('nv-blackout');
   hideElem('nv-char1');
   hideElem('nv-char2');
@@ -379,11 +386,12 @@ const drawScene04 = (longType, chars) => {
   });
 };
 
-const drawScene05 = (longType, chars) => {
+const drawScene05 = (longType, bg, chars) => {
   flags[0] = true;
   const type = longType.split('-')[1];
   const [char1, char2] = chars.split(';');
 
+  setBg('novel-screen', bg);
   hideElem('nv-blackout');
   setChar('nv-char1', char1);
   setChar('nv-char2', char2);
@@ -476,6 +484,7 @@ const animateArrow = () => {
 };
 
 const startDemonstration = () => {
+  setZoom;
   animateArrow();
   const startScreen = document.getElementById('start-screen');
   hideElem('nv-bubble');
@@ -487,6 +496,5 @@ const startDemonstration = () => {
     startScreen.style.zIndex = '-10';
   });
 }
-
 
 window.onload = setZoom;
