@@ -429,6 +429,7 @@ const drawScene = (scene) => {
 };
 
 const loop = () => {
+  setZoom();
   if (drawNext) {
     drawNext = false;
     setParam('nv-no-clicks', 'zIndex', 1100);
@@ -440,12 +441,21 @@ const loop = () => {
 };
 
 const setZoom = () => {
-  const html = document.getElementById('html');
   const width = window.innerWidth;
   const height = window.innerHeight;
+  const zoom = Math.min((width / 800), (height/450));
+  setParam('screen', 'zoom', zoom.toFixed(2));
+};
+
+const animateArrow = () => {
+  const arrow = document.getElementById('nv-arrow');
+  const startPos = Number(window.getComputedStyle(arrow).bottom.slice(0, -2));
+  animateLoopParamChange('nv-arrow', 'bottom', 'px', startPos, 2);
 };
 
 const startDemonstration = () => {
+  setZoom();
+  animateArrow();
   const startScreen = document.getElementById('start-screen');
   hideElem('nv-bubble');
   readFile('001', () => { 
@@ -457,9 +467,5 @@ const startDemonstration = () => {
   });
 }
 
-const animateArrow = () => {
-  const arrow = document.getElementById('nv-arrow');
-  const startPos = Number(window.getComputedStyle(arrow).bottom.slice(0, -2));
-  animateLoopParamChange('nv-arrow', 'bottom', 'px', startPos, 2);
-};
-window.onload = animateArrow;
+
+window.onload = startDemonstration;
