@@ -156,7 +156,10 @@ const animateTextIn = (id, text, i, step = 0.4, runAfter = () => {}) => {
 
 const setBubble = (type) => {};
 
-const drawScene00 = (longType, bg) => {
+const drawScene00 = (longType, bg, chars) => {
+  flags[0] = true;
+  const [char1, char2] = chars.split(';');
+  
   if (bg.startsWith('#')) {
     setParam('novel-screen', 'backgroundColor', bg);
     setParam('novel-screen', 'backgroundImage', 'none');
@@ -164,7 +167,26 @@ const drawScene00 = (longType, bg) => {
     setParam('novel-screen', 'backgroundImage', `url("./src/images/backgrounds/${bg}.png")`);
     setParam('novel-screen', 'backgroundColor', 'transparent');
   }
+
+  hideElem('nv-blackout');
+  if (char1 === '') {
+    hideElem('nv-char0');
+    hideElem('nv-char1');
+    hideElem('nv-char1');
+  } else if (char2 === '') {
+    setChar('nv-char0', char1);
+    showElem('nv-char0');
+    hideElem('nv-char1');
+    hideElem('nv-char2');
+  } else {
+    hideElem('nv-char0');
+    setChar('nv-char1', char1);
+    showElem('nv-char1');
+    setChar('nv-char2', char2);
+    showElem('nv-char2');
+  }
   drawNext = true;
+  flags[0] = false;
 };
 
 const drawScene01 = (longType, chars, bubble, text) => {
@@ -454,7 +476,6 @@ const animateArrow = () => {
 };
 
 const startDemonstration = () => {
-  setZoom();
   animateArrow();
   const startScreen = document.getElementById('start-screen');
   hideElem('nv-bubble');
@@ -468,4 +489,4 @@ const startDemonstration = () => {
 }
 
 
-window.onload = startDemonstration;
+window.onload = setZoom;
