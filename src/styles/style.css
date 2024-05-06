@@ -53,7 +53,7 @@ body {
     background-color: black;
     overflow: hidden;
     position: relative;
-    zoom: 1;
+    transform: scale(1);
 }
 
 #nv-bubble {

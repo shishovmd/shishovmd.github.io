@@ -458,6 +458,13 @@ const drawScene = (scene) => {
   wait();
 };
 
+const setZoom = () => {
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  const zoom = Math.min((width / 800), (height/450));
+  setParam('screen', 'transform', `scale(${zoom.toFixed(2)})`);
+};
+
 const loop = () => {
   setZoom();
   if (drawNext) {
@@ -468,13 +475,6 @@ const loop = () => {
     });
   }
   requestAnimationFrame(loop);
-};
-
-const setZoom = () => {
-  const width = window.innerWidth;
-  const height = window.innerHeight;
-  const zoom = Math.min((width / 800), (height/450));
-  setParam('screen', 'zoom', zoom.toFixed(2));
 };
 
 const animateArrow = () => {
