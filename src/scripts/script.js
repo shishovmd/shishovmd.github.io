@@ -417,6 +417,21 @@ const drawScene05 = (longType, bg, chars) => {
   });
 };
 
+const drawScene06 = () => {
+  setParam('nv-variants', 'left', '-800px');
+  setParam('nv-choice-hand', 'bottom', '-500px');
+  setParam('nv-choice-head', 'right', '-400px');
+  showElem('nv-choice');
+  animateParamChange('nv-variants', 'left', 1, 'px', -800, 10, 0.05, () => {
+    animateParamChange('nv-variants', 'left', 2, 'px', 10, 0, 0.05);
+  });
+  animateParamChange('nv-choice-head', 'right', 3, 'px', -500, 0, 0.05, () => {
+    animateParamChange('nv-choice-head', 'right', 4, 'px', 0, -10, 0.05, () => {
+      animateParamChange('nv-choice-hand', 'bottom', 5, 'px', -400, 0, 0.05);
+    });
+  })
+};
+
 const drawScene = (scene) => {
   setParam('nv-no-clicks', 'zIndex', 1100);
   const type = scene.split('_')[1]
@@ -442,6 +457,9 @@ const drawScene = (scene) => {
         break;
       case '05':
         drawScene05(...scene.split('_').slice(1));
+        break;
+      case '06':
+        drawScene06(...scene.split('_').slice(1));
         break;
       default:
         console.log('Error!')
@@ -483,9 +501,16 @@ const animateArrow = () => {
   animateLoopParamChange('nv-arrow', 'bottom', 'px', startPos, 2);
 };
 
+const animateHand = () => {
+  const hand = document.getElementById('nv-choice-hand');
+  const startPos = Number(window.getComputedStyle(hand).left.slice(0, -2));
+  animateLoopParamChange('nv-choice-hand', 'left', 'px', startPos, 200, 0.01);
+};
+
 const startDemonstration = () => {
   setZoom;
   animateArrow();
+  animateHand();
   const startScreen = document.getElementById('start-screen');
   hideElem('nv-bubble');
   readFile('001', () => { 
