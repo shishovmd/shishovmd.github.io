@@ -163,7 +163,6 @@ body {
 #nv-choice{
     visibility: hidden;
     z-index: 2000;
-    background-color: pink;
 }
 
 #nv-variants{

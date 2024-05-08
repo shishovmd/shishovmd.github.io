@@ -3,9 +3,10 @@ const requestAnimationFrame = window.requestAnimationFrame ||
   window.webkitRequestAnimationFrame ||
   window.msRequestAnimationFrame;
 
-var fileLines = [];
-var currScene = '';
-var currLine = 0;
+let fileLines = [];
+let currScene = '';
+let currLine = 0;
+let customNextScenePath = '';
 
 const readFile = (name, runAfter = () => {}) => {
   fileReaded = false;
@@ -18,7 +19,14 @@ const readFile = (name, runAfter = () => {}) => {
 };
 
 const getNextScene = (runAfter = () => {}) => {
-  const nextScenePath = currScene.split('_')[0];
+  let nextScenePath;
+  if (customNextScenePath !== '') {
+    nextScenePath = customNextScenePath;
+    customNextScenePath = '';
+  } else {
+    nextScenePath = currScene.split('_')[0];
+  }
+
   if (nextScenePath === '') {
     currLine += 1;
     currScene = fileLines[currLine];
@@ -417,7 +425,13 @@ const drawScene05 = (longType, bg, chars) => {
   });
 };
 
-const drawScene06 = () => {
+const drawScene06 = (longType, scene1, scene2, scene3) => {
+  if (scene3 === '') {
+    setParam('nv-var3', 'display', 'none');
+  } else {
+    setParam('nv-var3', 'display', 'flex');
+  }
+
   setParam('nv-variants', 'left', '-800px');
   setParam('nv-choice-hand', 'bottom', '-500px');
   setParam('nv-choice-head', 'right', '-400px');
