@@ -426,24 +426,31 @@ const drawScene05 = (longType, bg, chars) => {
 };
 
 const drawScene06 = (longType, scene1, scene2, scene3) => {
+  flags[0] = true;
   if (scene3 === '') {
     setParam('nv-var3', 'display', 'none');
   } else {
     setParam('nv-var3', 'display', 'flex');
+    setInnerHTML('nv-var3-txt', scene3.split('/')[1].toUpperCase());
   }
 
-  setParam('nv-variants', 'left', '-800px');
-  setParam('nv-choice-hand', 'bottom', '-500px');
+  setInnerHTML('nv-var1-txt', scene1.split('/')[1].toUpperCase());
+  setInnerHTML('nv-var2-txt', scene2.split('/')[1].toUpperCase());
+
+  setParam('nv-variants', 'left', '-600px');
+  setParam('nv-choice-hand', 'bottom', '-200px');
   setParam('nv-choice-head', 'right', '-400px');
+  animateParamChange('nv-choice', 'opacity', 5, '', 0, 1, 0.1)
   showElem('nv-choice');
-  animateParamChange('nv-variants', 'left', 1, 'px', -800, 10, 0.05, () => {
-    animateParamChange('nv-variants', 'left', 2, 'px', 10, 0, 0.05);
+  animateParamChange('nv-variants', 'left', 1, 'px', -600, 0, 0.05, () => {
+    animateParamChange('nv-variants', 'left', 2, 'px', 0, -18.75, 0.05);
   });
-  animateParamChange('nv-choice-head', 'right', 3, 'px', -500, 0, 0.05, () => {
-    animateParamChange('nv-choice-head', 'right', 4, 'px', 0, -10, 0.05, () => {
-      animateParamChange('nv-choice-hand', 'bottom', 5, 'px', -400, 0, 0.05);
+  animateParamChange('nv-choice-head', 'right', 3, 'px', -480, 0, 0.05, () => {
+    animateParamChange('nv-choice-head', 'right', 4, 'px', 0, -18.75, 0.05, () => {
+      animateParamChange('nv-choice-hand', 'bottom', 5, 'px', -200, 0, 0.07);
     });
-  })
+  });
+  flags[0] = false;
 };
 
 const drawScene = (scene) => {
@@ -490,13 +497,23 @@ const drawScene = (scene) => {
   wait();
 };
 
+let zoom = 1;
 const setZoom = () => {
   const width = window.innerWidth;
   const height = window.innerHeight;
-  const zoom = Math.min((width / 800), (height/450));
+  zoom = Math.min((width / 800), (height/450));
   setParam('screen', 'transform', `scale(${zoom.toFixed(2)})`);
 };
 
+const handMove = (e) => {
+  let offset = document.getElementById('screen').getBoundingClientRect();
+  var x = (e.pageX - offset.left) / zoom;
+  const hand = document.getElementById('nv-choice-hand');
+  hand.style.left = `${x - 52}px`;
+}
+document.addEventListener('mousemove', (e) => {
+  handMove(e);
+});
 const loop = () => {
   setZoom();
   if (drawNext) {
@@ -515,19 +532,12 @@ const animateArrow = () => {
   animateLoopParamChange('nv-arrow', 'bottom', 'px', startPos, 2);
 };
 
-const animateHand = () => {
-  const hand = document.getElementById('nv-choice-hand');
-  const startPos = Number(window.getComputedStyle(hand).left.slice(0, -2));
-  animateLoopParamChange('nv-choice-hand', 'left', 'px', startPos, 200, 0.01);
-};
-
 const startDemonstration = () => {
   setZoom;
   animateArrow();
-  animateHand();
   const startScreen = document.getElementById('start-screen');
   hideElem('nv-bubble');
-  readFile('001', () => { 
+  readFile('002', () => { 
     currScene = fileLines[currLine];
     drawNext = true;
     loop();

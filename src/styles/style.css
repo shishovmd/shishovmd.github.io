@@ -4,6 +4,18 @@
     font-weight: normal;
     font-style: normal;
 }
+@font-face {
+    font-family: 'AlumniSans';
+    src: url('../fonts/AlumniSans-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'AlumniSans';
+    src: url('../fonts/AlumniSans-ExtraBold.ttf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+}
 
 * {
     margin: 0;
@@ -155,38 +167,56 @@ body {
     height: 300px;
     position: absolute;
     bottom: 0px;
-    background: linear-gradient(#00000000, #000000);
-    opacity: 0.5;
+    background: linear-gradient(#00000000, #00000088);
     z-index: 550;
 }
 
 #nv-choice{
+    background-color: #000000;
     visibility: hidden;
-    z-index: 2000;
+    z-index: 1000;
 }
 
 #nv-variants{
-    height: 350px;
-    width: 600px;
+    box-sizing: border-box;
+    height: 371.875px;
+    width: 581.25px;
     position: absolute;
-    top: 50px;
-    left: 0px;
-    background-color: blue;
+    top: 39.0625px;
+    left: -18.75px;
+    background-image: url("../images/interface/nv-choice/panels-bg.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: left;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
-    padding-bottom: 20px;
+    padding-right: 11.25px;
 }
 
 .nv-var-pannel{
-    height: 200px;
-    width: 120px;
-    background-color: white;
+    box-sizing: border-box;
+    height: 231.25px;
+    width: 158.125px;
+    margin: 1px;
+    background-image: url("../images/interface/nv-choice/panel.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
+    padding: 30px 30px;
+    font-family: 'AlumniSans';
+    font-size: 20px;
+    line-height: 16px;
+    font-weight: 700;
+    color: #000000;
+}
+.nv-var-pannel:hover{
+    cursor: pointer;
+    background-image: url("../images/interface/nv-choice/panel-hover.png");
 }
 .nv-var-txt{
     text-align: center;
@@ -194,8 +224,7 @@ body {
     flex-direction: column;
     justify-content: center;
     width: 100%;
-    height: 100px;
-    background-color: aquamarine;
+    height: 90px;
 }
 .nv-var-btn{
     height: 50px;
@@ -204,19 +233,29 @@ body {
 }
 
 #nv-choice-hand{
-    height: 200px;
-    width: 200px;
+    pointer-events: none;
+    box-sizing: border-box;
+    height: 190px;
+    width: 159.375px;
     position: absolute;
-    bottom: -5px;
-    left: 200px;
-    background-color: purple;
+    bottom: 0px;
+    left: 210px;
+    background-image: url("../images/interface/nv-choice/hand.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom;
 }
 #nv-choice-head{
+    pointer-events: none;
+    box-sizing: border-box;
     height: 450px;
-    width: 250px;
+    width: 371.25px;
     position: absolute;
-    right: 0px;
-    background-color: aquamarine;
+    right: -18.75px;
+    background-image: url("../images/interface/nv-choice/head.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: left;
 }
 
 .hidden{
