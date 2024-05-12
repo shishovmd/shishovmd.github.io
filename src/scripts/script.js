@@ -35,13 +35,13 @@ const getNextScene = (runAfter = () => {}) => {
   }
   if (nextScenePath.includes(';')) {
     readFile(nextScenePath.split(';')[0], () => {
-      currLine = Number(nextScenePath.split(';')[1]);
+      currLine = Number(nextScenePath.split(';')[1]) - 1;
       currScene = fileLines[currLine];
       runAfter();
     });
     return;
   }
-  currLine = Number(nextScenePath);
+  currLine = Number(nextScenePath) - 1;
   currScene = fileLines[currLine];
   runAfter();
 };
@@ -426,13 +426,38 @@ const drawScene05 = (longType, bg, chars) => {
 };
 
 const drawScene06 = (longType, scene1, scene2, scene3) => {
+  const endScene06 = () => {
+    flags[1] =  true;
+    animateParamChange('nv-choice-head', 'right', 3, 'px', -18.75, -480, 0.05);
+    animateParamChange('nv-choice-hand', 'bottom', 4, 'px', 0, -200, 0.07);
+    animateParamChange('nv-variants', 'left', 2, 'px', -18.75, -600, 0.05);
+    animateParamChange('nv-choice-bg', 'opacity', 5, '', 1, 0, 0.1, () => {
+      hideElem('nv-choice');
+      drawNext = true;
+    });
+    flags[1] = false;
+  };
+
   flags[0] = true;
   if (scene3 === '') {
     setParam('nv-var3', 'display', 'none');
   } else {
     setParam('nv-var3', 'display', 'flex');
     setInnerHTML('nv-var3-txt', scene3.split('/')[1].toUpperCase());
+    document.getElementById('nv-var3').onclick = () => {
+      customNextScenePath = scene3.split('/')[0];
+      endScene06();
+    };
   }
+
+  document.getElementById('nv-var1').onclick = () => {
+    customNextScenePath = scene1.split('/')[0];
+    endScene06();
+  };
+  document.getElementById('nv-var2').onclick = () => {
+    customNextScenePath = scene2.split('/')[0];
+    endScene06();
+  };
 
   setInnerHTML('nv-var1-txt', scene1.split('/')[1].toUpperCase());
   setInnerHTML('nv-var2-txt', scene2.split('/')[1].toUpperCase());
@@ -440,7 +465,7 @@ const drawScene06 = (longType, scene1, scene2, scene3) => {
   setParam('nv-variants', 'left', '-600px');
   setParam('nv-choice-hand', 'bottom', '-200px');
   setParam('nv-choice-head', 'right', '-400px');
-  animateParamChange('nv-choice', 'opacity', 5, '', 0, 1, 0.1)
+  animateParamChange('nv-choice-bg', 'opacity', 5, '', 0, 1, 0.1)
   showElem('nv-choice');
   animateParamChange('nv-variants', 'left', 1, 'px', -600, 0, 0.05, () => {
     animateParamChange('nv-variants', 'left', 2, 'px', 0, -18.75, 0.05);

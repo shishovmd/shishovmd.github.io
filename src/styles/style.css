@@ -97,6 +97,7 @@ body {
 }
 #nv-text{
     font-family: 'CCSoliloquous';
+    letter-spacing: -0.5px;
     font-size: 16px;
     line-height: 16px;
     color: #000000;
@@ -172,9 +173,11 @@ body {
 }
 
 #nv-choice{
-    background-color: #000000;
     visibility: hidden;
     z-index: 1000;
+}
+#nv-choice-bg{
+    background-color: #000000;
 }
 
 #nv-variants{
