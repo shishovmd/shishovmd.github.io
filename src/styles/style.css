@@ -182,10 +182,9 @@ body {
 
 #nv-variants{
     box-sizing: border-box;
-    height: 371.875px;
+    height: 450px;
     width: 581.25px;
     position: absolute;
-    top: 39.0625px;
     left: -18.75px;
     background-image: url("../images/interface/nv-choice/panels-bg.png");
     background-size: contain;
@@ -199,7 +198,7 @@ body {
 
 .nv-var-pannel{
     box-sizing: border-box;
-    height: 231.25px;
+    height: 450px;
     width: 158.125px;
     margin: 1px;
     background-image: url("../images/interface/nv-choice/panel.png");
@@ -210,7 +209,7 @@ body {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    padding: 30px 30px;
+    padding: 139.375px 30px;
     font-family: 'AlumniSans';
     font-size: 20px;
     line-height: 16px;
@@ -218,7 +217,6 @@ body {
     color: #000000;
 }
 .nv-var-pannel:hover{
-    cursor: pointer;
     background-image: url("../images/interface/nv-choice/panel-hover.png");
 }
 .nv-var-txt{

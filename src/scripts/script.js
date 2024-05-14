@@ -433,12 +433,14 @@ const drawScene06 = (longType, scene1, scene2, scene3) => {
     animateParamChange('nv-variants', 'left', 2, 'px', -18.75, -600, 0.05);
     animateParamChange('nv-choice-bg', 'opacity', 5, '', 1, 0, 0.1, () => {
       hideElem('nv-choice');
+      setParam('html', 'cursor', 'default');
       drawNext = true;
     });
     flags[1] = false;
   };
 
   flags[0] = true;
+  setParam('html', 'cursor', 'none');
   if (scene3 === '') {
     setParam('nv-var3', 'display', 'none');
   } else {
