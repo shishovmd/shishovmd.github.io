@@ -67,7 +67,7 @@ body {
     transform: scale(1);
 }
 
-#nv-bubble {
+.bubble {
     box-sizing: border-box;
     width: 300px;
     height: 200px;
@@ -84,7 +84,7 @@ body {
     background-color: white;
     z-index: 800;
 }
-#nv-text-area{
+.text-area{
     width: 100%;
     height: 100px;
 
@@ -92,10 +92,10 @@ body {
     flex-direction: column;
     justify-content: center;
 }
-#nv-text-area > div{
+.text-area > div{
     position: relative;
 }
-#nv-text{
+.bubble-text{
     font-family: 'CCSoliloquous';
     letter-spacing: -0.5px;
     font-size: 16px;
@@ -108,7 +108,7 @@ body {
     z-index: 900;
 }
 
-#nv-arrow{
+.arrow{
     width: 100%;
     display: flex;
     justify-content: center;
@@ -118,7 +118,7 @@ body {
 
 
 
-#nv-arrow > div{
+.arrow > div{
     display: block;
     width: 16px;
     height: 16px;
@@ -174,7 +174,7 @@ body {
 
 #nv-choice{
     visibility: hidden;
-    z-index: 1000;
+    z-index: -1000;
 }
 #nv-choice-bg{
     background-color: #000000;
@@ -217,7 +217,8 @@ body {
     color: #000000;
 }
 .nv-var-pannel:hover{
-    background-image: url("../images/interface/nv-choice/panel-hover.png");
+    background-image: url("../images/interface/nv-choice/panel-hover.png"),
+                      url("../images/interface/nv-choice/panel.png");
 }
 .nv-var-txt{
     text-align: center;
@@ -257,6 +258,45 @@ body {
     background-size: contain;
     background-repeat: no-repeat;
     background-position: left;
+}
+
+#date-screen{
+    z-index: -1000;
+}
+#dt-bg{
+    background-color: #000000;
+}
+#dt-game{
+    position: absolute;
+    width: 800px;
+    height: 350px;
+    top: 50px;
+    background-color: aqua;
+}
+#dt-char1{
+    position: absolute;
+    width: 200px;
+    height: 450px;
+    background-color: rebeccapurple;
+}
+#dt-char2{
+    position: absolute;
+    width: 200px;
+    height: 450px;
+    right: 0px;
+    background-color: rebeccapurple;
+}
+#dt-bubble1{
+    width: 200px;
+    top: 0px;
+    left: 25px;
+}
+#dt-bubble2{
+    width: 200px;
+    top: auto;
+    left: auto;
+    bottom: 0px;
+    right: 25px;
 }
 
 .hidden{

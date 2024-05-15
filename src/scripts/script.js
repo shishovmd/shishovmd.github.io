@@ -149,7 +149,7 @@ const animateTextIn = (id, text, i, step = 0.4, runAfter = () => {}) => {
   flags[i] = true;
   hideElem('nv-arrow');
   textSkip = false;
-  setParam('nv-text-skip', 'zIndex', 1200);
+  setParam('nv-text-skip', 'zIndex', 2100);
   const elem = document.getElementById(id);
 
   let currPos = 0;
@@ -433,6 +433,7 @@ const drawScene06 = (longType, scene1, scene2, scene3) => {
     animateParamChange('nv-variants', 'left', 2, 'px', -18.75, -600, 0.05);
     animateParamChange('nv-choice-bg', 'opacity', 5, '', 1, 0, 0.1, () => {
       hideElem('nv-choice');
+      setParam('nv-choice', 'zIndex', '-1000');
       setParam('html', 'cursor', 'default');
       drawNext = true;
     });
@@ -468,6 +469,7 @@ const drawScene06 = (longType, scene1, scene2, scene3) => {
   setParam('nv-choice-hand', 'bottom', '-200px');
   setParam('nv-choice-head', 'right', '-400px');
   animateParamChange('nv-choice-bg', 'opacity', 5, '', 0, 1, 0.1)
+  setParam('nv-choice', 'zIndex', '1000');
   showElem('nv-choice');
   animateParamChange('nv-variants', 'left', 1, 'px', -600, 0, 0.05, () => {
     animateParamChange('nv-variants', 'left', 2, 'px', 0, -18.75, 0.05);
@@ -480,8 +482,66 @@ const drawScene06 = (longType, scene1, scene2, scene3) => {
   flags[0] = false;
 };
 
+const drawScene07 = (longType, ...data) => {
+  flags[0] = true;
+  const type = longType.split('-')[1];
+
+  if (type === '0') {
+    setParam('dt-char1', 'left', '-250px');
+    setParam('dt-char2', 'right', '-250px');
+    animateParamChange('dt-bg', 'opacity', 5, '', 0, 1, 0.1);
+    setParam('date-screen', 'zIndex', '1000');
+    showElem('date-screen');
+    animateParamChange('dt-char1', 'left', 1, 'px', -250, 0, 0.05, () => {
+      animateParamChange('dt-char1', 'left', 2, 'px', 0, -18.75, 0.05);
+    });
+    animateParamChange('dt-char2', 'right', 3, 'px', -250, 0, 0.05, () => {
+      animateParamChange('dt-char2', 'right', 4, 'px', 0, -18.75, 0.05);
+   });
+  }
+
+  // setParam('html', 'cursor', 'none');
+  // if (scene3 === '') {
+  //   setParam('nv-var3', 'display', 'none');
+  // } else {
+  //   setParam('nv-var3', 'display', 'flex');
+  //   setInnerHTML('nv-var3-txt', scene3.split('/')[1].toUpperCase());
+  //   document.getElementById('nv-var3').onclick = () => {
+  //     customNextScenePath = scene3.split('/')[0];
+  //     endScene06();
+  //   };
+  // }
+
+  // document.getElementById('nv-var1').onclick = () => {
+  //   customNextScenePath = scene1.split('/')[0];
+  //   endScene06();
+  // };
+  // document.getElementById('nv-var2').onclick = () => {
+  //   customNextScenePath = scene2.split('/')[0];
+  //   endScene06();
+  // };
+
+  // setInnerHTML('nv-var1-txt', scene1.split('/')[1].toUpperCase());
+  // setInnerHTML('nv-var2-txt', scene2.split('/')[1].toUpperCase());
+
+  // setParam('nv-variants', 'left', '-600px');
+  // setParam('nv-choice-hand', 'bottom', '-200px');
+  // setParam('nv-choice-head', 'right', '-400px');
+  // animateParamChange('nv-choice-bg', 'opacity', 5, '', 0, 1, 0.1)
+  // showElem('nv-choice');
+  // animateParamChange('nv-variants', 'left', 1, 'px', -600, 0, 0.05, () => {
+  //   animateParamChange('nv-variants', 'left', 2, 'px', 0, -18.75, 0.05);
+  // });
+  // animateParamChange('nv-choice-head', 'right', 3, 'px', -480, 0, 0.05, () => {
+  //   animateParamChange('nv-choice-head', 'right', 4, 'px', 0, -18.75, 0.05, () => {
+  //     animateParamChange('nv-choice-hand', 'bottom', 5, 'px', -200, 0, 0.07);
+  //   });
+  // });
+  // flags[0] = false;
+};
+
 const drawScene = (scene) => {
-  setParam('nv-no-clicks', 'zIndex', 1100);
+  setParam('nv-no-clicks', 'zIndex', 2000);
   const type = scene.split('_')[1]
 
   animateParamChange('nv-bubble', 'opacity', 1, '', 1, 0, 0.1, () => {
@@ -508,6 +568,9 @@ const drawScene = (scene) => {
         break;
       case '06':
         drawScene06(...scene.split('_').slice(1));
+        break;
+      case '07':
+        drawScene07(...scene.split('_').slice(1));
         break;
       default:
         console.log('Error!')
@@ -564,7 +627,7 @@ const startDemonstration = () => {
   animateArrow();
   const startScreen = document.getElementById('start-screen');
   hideElem('nv-bubble');
-  readFile('002', () => { 
+  readFile('003', () => { 
     currScene = fileLines[currLine];
     drawNext = true;
     loop();

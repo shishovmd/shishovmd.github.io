@@ -14,22 +14,20 @@
       <div id="nv-char1" class="character-size"></div>
       <div id="nv-char2" class="character-size"></div>
       <div id="nv-blackout"></div>
-      <div id="nv-bubble">
-        <div id="nv-text-area">
+      <div id="nv-bubble" class="bubble">
+        <div class="text-area">
           <div>
-            <div id="nv-text">
+            <div id="nv-text" class="bubble-text">
               ТЕКСТ В НЕСКОЛЬКО СТРОК
             </div>
-            <div id="nv-arrow"><div>></div></div>
+            <div id="nv-arrow" class="arrow"><div>></div></div>
           </div>
         </div>
       </div>
 
       <div id="nv-effects" class="screen-size"></div>
       <div id="nv-next-scene" class="screen-size" onclick="drawNextScene()"></div>
-      <div id="nv-no-clicks" class="screen-size"></div>
-      <div id="nv-text-skip" class="screen-size" onclick="skipTextAnimation()"></div>
-
+      
       <div id="nv-choice" class="screen-size">
         <div id="nv-choice-bg" class="screen-size"></div>
         <div id="nv-variants">
@@ -56,8 +54,38 @@
       </div>
     </div>
 
-    <div id="date-screen">
+    <div id="date-screen" class="screen-size">
+      <div id="dt-bg" class="screen-size"></div>
+      <div id="dt-game"></div>
+      <div id="dt-blackout" class="screen-size"></div>
+      <div id="dt-char1"></div>
+      <div id="dt-char2"></div>
+
+      <div id="dt-bubble1" class="bubble">
+        <div class="text-area">
+          <div>
+            <div id="dt-text1" class="bubble-text">
+              ТЕКСТ В НЕСКОЛЬКО СТРОК
+            </div>
+            <div id="dt-arrow1" class="arrow"><div>></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="dt-bubble2" class="bubble">
+        <div class="text-area">
+          <div>
+            <div id="dt-text2" class="bubble-text">
+              ТЕКСТ В НЕСКОЛЬКО СТРОК
+            </div>
+            <div id="dt-arrow2" class="arrow"><div>></div></div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <div id="nv-no-clicks" class="screen-size"></div>
+    <div id="nv-text-skip" class="screen-size" onclick="skipTextAnimation()"></div>
 
     <div id="menu-screen" onclick="scenesone()">
     </div>
