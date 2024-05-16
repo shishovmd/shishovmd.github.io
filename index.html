@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Explosive Attraction</title>
   <link rel="stylesheet" href="src/styles/style.css">
+  <link rel="stylesheet" href="src/styles/game.css">
   <script src="./src/scripts/script.js"></script>
+  <script src="./src/scripts/game.js"></script>
 </head>
 <body id="body">
   <div id="screen">
@@ -29,7 +31,9 @@
 
       <div id="date-screen" class="screen-size">
         <div id="dt-bg" class="screen-size"></div>
-        <div id="dt-game"></div>
+        <div id="dt-game">
+          <div id='main_grid' class="grid"></div>
+        </div>
         <div id="dt-blackout" class="screen-size"></div>
         <div id="dt-char1"></div>
         <div id="dt-char2"></div>
@@ -58,6 +62,8 @@
             </div>
           </div>
         </div>
+
+        <div id="start-game" class="hidden" onclick="startSapper()"></div>
       </div>
       
       <div id="nv-next-scene" class="screen-size" onclick="drawNextScene()"></div>
@@ -93,9 +99,9 @@
 
     <div id="days-screen" class="screen-size">
       <div id="calendar">
-        <div id="day1" class="active-day" onclick="startDay('001')"></div>
-        <div id="day16" class="active-day" onclick="startDay('002')"></div>
-        <div id="day17" class="active-day" onclick="startDay('003')"></div>
+        <div id="day1" class="active-day" onclick="startDay('001')">Сцены</div>
+        <div id="day16" class="active-day" onclick="startDay('002')">Выбор</div>
+        <div id="day17" class="active-day" onclick="startDay('003')">Сапёр</div>
       </div>
       <div id="days-text">ВЫБЕРИТЕ ДЕНЬ</div>
     </div>
@@ -113,6 +119,6 @@
   </div>
 
   <div id="hidden-elem" class="hidden"></div>
-  <div id="game-data" class="hidden" cells-closed="" event="" curr-health="" onclick="getGameData()"></div>
+  <div id="game-data" class="hidden" cells-closed="" game-event="" curr-health="" onclick="getGameData()"></div>
 </body>
 </html>

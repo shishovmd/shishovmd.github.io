@@ -503,6 +503,41 @@ const drawScene06 = (longType, scene1, scene2, scene3) => {
   flags[0] = false;
 };
 
+
+
+let positiveOutcomeWay = '';
+let neutralOutcomeWay = '';
+let negativeOutcomeWay = '';
+
+let needsToOpen = 0;
+let posAnswer = '';
+let negAnswer = '';
+let cellsOpened = 0;
+let gameEvent = '';
+let currHealth = 0;
+const getGameData = () => {
+  const gameData = document.getElementById('game-data');
+  cellsOpened = Number(gameData.getAttribute('cells-closed'));
+  gameEvent = gameData.getAttribute('game-event');
+  currHealth = Number(gameData.getAttribute('curr-health'));
+  if (cellsOpened === 100) {
+    customNextScenePath = positiveOutcomeWay;
+    drawNext = true;
+    return;
+  } 
+  if (cellsOpened >= needsToOpen) {
+    console.log(posAnswer);
+    customNextScenePath = posAnswer;
+    drawNext = true;
+    return;
+  } 
+  if (gameEvent === 'loose') {
+    customNextScenePath = positiveOutcomeWay;
+    drawNext = true;
+    return;
+  }
+};
+
 const drawScene07 = (longType, ...data) => {
   flags[0] = true;
   const type = longType.split('-')[1];
@@ -512,25 +547,32 @@ const drawScene07 = (longType, ...data) => {
 
   if (type === '0') {
     const [char1, char2] = data[0].split(';');
+    positiveOutcomeWay = data[1];
+    neutralOutcomeWay = data[2];
+    negativeOutcomeWay = data[3];
+    document.getElementById('start-game').onclick();
+    hideElem('dt-blackout');
     hideElem('dt-bubble1');
     hideElem('dt-bubble2');
-    setParam('dt-char1', 'left', '-250px');
-    setParam('dt-char2', 'right', '-250px');
+    setParam('dt-char1', 'left', '-400px');
+    setParam('dt-char2', 'right', '-400px');
     setChar('dt-char1', char1);
     setChar('dt-char2', char2);
     animateParamChange('dt-bg', 'opacity', 5, '', 0, 1, 0.1);
     setParam('date-screen', 'zIndex', '1000');
     showElem('date-screen');
-    animateParamChange('dt-char1', 'left', 1, 'px', -250, 0, 0.05, () => {
-      animateParamChange('dt-char1', 'left', 2, 'px', 0, -18.75, 0.05);
+    animateParamChange('dt-char1', 'left', 1, 'px', -400, -180, 0.05, () => {
+      animateParamChange('dt-char1', 'left', 2, 'px', -180, -200, 0.05);
     });
-    animateParamChange('dt-char2', 'right', 3, 'px', -250, 0, 0.05, () => {
-      animateParamChange('dt-char2', 'right', 4, 'px', 0, -18.75, 0.05, () => {
+    animateParamChange('dt-char2', 'right', 3, 'px', -400, -180, 0.05, () => {
+      animateParamChange('dt-char2', 'right', 4, 'px', -180, -200, 0.05, () => {
         drawNext = true;
         flags[0] = false;
       });
     });
   } else if (type === '1' || type === '2') {
+    setParam('date-screen', 'zIndex', '1000');
+    setParam('dt-blackout', 'zIndex', 'initial');
     showElem('dt-blackout');
     const idChar = type === '1' ? 'dt-char1' : 'dt-char2';
     const idBubble = type === '1' ? 'dt-bubble1' : 'dt-bubble2';
@@ -543,6 +585,8 @@ const drawScene07 = (longType, ...data) => {
     animateParamChange(idBubble, 'opacity', 1, '', 1, 0, 0.1, () => {
       hideElem(idArrow);
       if (text === '') {
+        setInnerHTML(idText, '');
+        hideElem(idBubble);
         drawNext = true;
         flags[0] = false;
       } else {
@@ -566,10 +610,33 @@ const drawScene07 = (longType, ...data) => {
     setParam('dt-text2', 'display', 'none');
     setParam('dt-text3', 'display', 'block');
   } else if (type === '4') {
+    console.log(data);
+    needsToOpen = Number(data[0]);
+    posAnswer = data[1];
+    negAnswer = data[2];
     hideElem('dt-arrow1');
     hideElem('dt-arrow2');
+    hideElem('dt-blackout');
+    setParam('dt-blackout', 'zIndex', '0');
+    setParam('date-screen', 'zIndex', '2500');
+  } else if (type === '5') {
+    animateParamChange('dt-bubble1', 'opacity', 1, '', 1, 0, 0.1, () => {
+      hideElem('dt-bubble1');
+    });
+    animateParamChange('dt-bubble2', 'opacity', 2, '', 1, 0, 0.1, () => {
+      hideElem('dt-bubble2');
+    });
+    hideElem('dt-blackout');
+    animateParamChange('dt-char2', 'right', 3, 'px', -200, -400, 0.05)
+    animateParamChange('dt-char1', 'left', 4, 'px', -200, -400, 0.05, () => {
+      hideElem('date-screen');
+      setParam('date-screen', 'zIndex', '0');
+      drawNext = true;
+      flags[0] = false;
+    });
   }
 };
+
 
 const drawScene99 = (longType) => {
   flags[0] = true;
@@ -687,6 +754,7 @@ const hideStartScreen = () => {
 
 const startDay = (file) => {
   readFile(file, () => {
+    currLine = 0;
     currScene = fileLines[0];
     drawScene(currScene);
   });

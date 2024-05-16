@@ -1,0 +1,35 @@
+.grid {
+    display: grid;
+    justify-content: center;
+}
+
+div[id^="cell_"] {
+    border: 1px solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.closed {
+    background: #d0d0d0;
+}
+
+.open {
+    background: #ffffff;
+    cursor: default;
+}
+
+.flag {
+    background: #4972bd;
+}
+
+.bomb {
+    background: #d73543;
+}
+
+.empty {
+    border: none;
+}
