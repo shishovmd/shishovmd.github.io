@@ -35,6 +35,21 @@ body {
     justify-content: center;
     align-items: center;
     font-size: 16px;
+    background-color: #000000;
+}
+
+#protector{
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000000;
+    z-index: 3000;
+}
+#pr-load{
+    color: #ffffff;
 }
 
 .screen-size{
@@ -44,6 +59,7 @@ body {
     background-color: transparent;
     background-image: none;
 }
+
 
 #nv-next-scene{
     z-index: 1000;
@@ -65,6 +81,20 @@ body {
     overflow: hidden;
     position: relative;
     transform: scale(1);
+}
+
+#days-screen{
+    background-color: cyan;
+    z-index: 2100;
+}
+.active-day{
+    width: 50px;
+    height: 50px;
+    background-color: antiquewhite;
+}
+.active-day:hover{
+    background-color: red;
+    cursor: pointer;
 }
 
 .bubble {
@@ -139,10 +169,13 @@ body {
     justify-content: center;
     align-items: center;
     background-color: pink;
-    z-index: 2000;
+    z-index: 2500;
 }
 #start-screen:hover{
     cursor: pointer;
+}
+#st-text{
+    opacity: 0;
 }
 
 .character-size{

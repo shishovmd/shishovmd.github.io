@@ -571,6 +571,23 @@ const drawScene07 = (longType, ...data) => {
   }
 };
 
+const drawScene99 = (longType) => {
+  flags[0] = true;
+  const type = longType.split('-')[1];
+  if (type === '0') {
+    animateParamChange('days-screen', 'opacity', 1, '', 1, 0, 0.03, () => {
+      setParam('days-screen', 'z-index', 0);
+      hideElem('days-screen');
+      drawNext = true;
+      flags[0] = false;
+    });
+  } else if (type === '1') {
+    setParam('days-screen', 'z-index', '2100');
+    showElem('days-screen');
+    animateParamChange('days-screen', 'opacity', 1, '', 0, 1, 0.03);
+  }
+};
+
 const drawScene = (scene) => {
   setParam('nv-no-clicks', 'zIndex', 2000);
   const type = scene.split('_')[1]
@@ -602,6 +619,9 @@ const drawScene = (scene) => {
         break;
       case '07':
         drawScene07(...scene.split('_').slice(1));
+        break;
+      case '99':
+        drawScene99(...scene.split('_').slice(1));
         break;
       default:
         console.log('Error!')
@@ -635,6 +655,7 @@ const handMove = (e) => {
 document.addEventListener('mousemove', (e) => {
   handMove(e);
 });
+
 const loop = () => {
   setZoom();
   if (drawNext) {
@@ -653,20 +674,36 @@ const animateArrow = (id) => {
   animateLoopParamChange(id, 'bottom', 'px', startPos, 2);
 };
 
+
+const makeCalendar = () => {
+  const container = document.getElementById('calendar');
+}
+
+const hideStartScreen = () => {
+  //анимация
+  setParam('start-screen', 'display', 'none');
+  setParam('start-screen', 'zIndex', '-100');
+}
+
+const startDay = (file) => {
+  readFile(file, () => {
+    currScene = fileLines[0];
+    drawScene(currScene);
+  });
+};
+
 const startDemonstration = () => {
-  setZoom;
+  loop();
   animateArrow('nv-arrow');
   animateArrow('dt-arrow1');
   animateArrow('dt-arrow2');
-  const startScreen = document.getElementById('start-screen');
-  hideElem('nv-bubble');
-  readFile('003', () => { 
-    currScene = fileLines[currLine];
-    drawNext = true;
-    loop();
-    hideElem('start-screen');
-    startScreen.style.zIndex = '-10';
-  });
+  animateParamChangeNoFlags('protector', 'opacity', '', 1, 0, 0.03, () => {
+    setParam('protector', 'display', 'none');
+    setParam('protector', 'zIndex', '-100');
+    animateParamChangeNoFlags('st-text', 'opacity', '', 0, 0.5, 0.05, () => {
+      animateLoopParamChange('st-text', 'opacity', '', 0.5, 0.5, 0.06);
+    });
+  })
 }
 
-window.onload = setZoom;
+window.onload = startDemonstration;
