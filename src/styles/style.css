@@ -298,6 +298,16 @@ body {
     bottom: 0px;
     right: 25px;
 }
+#dt-text2{
+    display: block;
+}
+#dt-text3{
+    display: none;
+}
+#dt-blackout{
+    background-color: #00000088;
+    visibility: hidden;
+}
 
 .hidden{
     position: absolute;

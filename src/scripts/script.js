@@ -123,6 +123,27 @@ const animateParamChange = (id, param, i, units = '', start = 0, end = 1, speed 
   animation();
 };
 
+const animateParamChangeNoFlags = (id, param, units = '', start = 0, end = 1, speed = 0.2, runAfter = () => {}) => {
+  const elem = document.getElementById(id);
+  elem.style[param] = `${start}${units}`;
+
+  const step = (end - start) * speed;
+  const trustEnd = [end - step, end + step].sort((a, b) => a - b);
+  let curr = start;
+
+  const animation = () => {
+    if (curr > trustEnd[0] && curr < trustEnd[1]) {
+      elem.style[param] = `${end}${units}`;
+      runAfter();
+      return;
+    }
+    curr += step;
+    elem.style[param] = `${curr}${units}`;
+    requestAnimationFrame(animation);
+  }
+  animation();
+};
+
 const animateParamJump = (id, param, i, units = '', start = 0, range = 1, speed = 0.2, runAfter = () => {}) => {
   animateParamChange(id, param, i, units, start, start + range, speed, () => {
     animateParamChange(id, param, i, units, start + range, start, speed, runAfter());
@@ -172,7 +193,7 @@ const animateTextIn = (id, text, i, step = 0.4, runAfter = () => {}) => {
   animation();
 };
 
-const setBubble = (type) => {};
+const setBubble = (id, type) => {};
 
 const drawScene00 = (longType, bg, chars) => {
   flags[0] = true;
@@ -253,7 +274,7 @@ const drawScene01 = (longType, bg, chars, bubble, text) => {
     } else {
       showElem('nv-blackout');
     }
-    setBubble(bubble);
+    setBubble('nv-bubble', bubble);
     setInnerHTML('nv-text', '');
     animateParamJump(charToJump, 'top', 1, 'px', 0, -10, 0.15);
     animateParamChange('nv-bubble', 'opacity', 2, '', 0, 1, 0.1);
@@ -486,9 +507,17 @@ const drawScene07 = (longType, ...data) => {
   flags[0] = true;
   const type = longType.split('-')[1];
 
+  setParam('dt-text2', 'display', 'block');
+  setParam('dt-text3', 'display', 'none');
+
   if (type === '0') {
+    const [char1, char2] = data[0].split(';');
+    hideElem('dt-bubble1');
+    hideElem('dt-bubble2');
     setParam('dt-char1', 'left', '-250px');
     setParam('dt-char2', 'right', '-250px');
+    setChar('dt-char1', char1);
+    setChar('dt-char2', char2);
     animateParamChange('dt-bg', 'opacity', 5, '', 0, 1, 0.1);
     setParam('date-screen', 'zIndex', '1000');
     showElem('date-screen');
@@ -496,48 +525,50 @@ const drawScene07 = (longType, ...data) => {
       animateParamChange('dt-char1', 'left', 2, 'px', 0, -18.75, 0.05);
     });
     animateParamChange('dt-char2', 'right', 3, 'px', -250, 0, 0.05, () => {
-      animateParamChange('dt-char2', 'right', 4, 'px', 0, -18.75, 0.05);
-   });
+      animateParamChange('dt-char2', 'right', 4, 'px', 0, -18.75, 0.05, () => {
+        drawNext = true;
+        flags[0] = false;
+      });
+    });
+  } else if (type === '1' || type === '2') {
+    showElem('dt-blackout');
+    const idChar = type === '1' ? 'dt-char1' : 'dt-char2';
+    const idBubble = type === '1' ? 'dt-bubble1' : 'dt-bubble2';
+    const idText = type === '1' ? 'dt-text1' : 'dt-text2';
+    const idArrow = type === '1' ? 'dt-arrow1' : 'dt-arrow2';
+    const idHideArrow = type === '1' ? 'dt-arrow2' : 'dt-arrow1';
+    const [char, bubble, text] = data;
+    hideElem(idHideArrow);
+    setChar(idChar, char);
+    animateParamChange(idBubble, 'opacity', 1, '', 1, 0, 0.1, () => {
+      hideElem(idArrow);
+      if (text === '') {
+        drawNext = true;
+        flags[0] = false;
+      } else {
+        setBubble(idBubble, bubble);
+        setInnerHTML(idText, '');
+        animateParamJump(idChar, 'top', 2, 'px', 0, -10, 0.15);
+        animateParamChange(idBubble, 'opacity', 3, '', 0, 1, 0.1);
+        showElem(idBubble);
+        animateTextIn(idText, text.toUpperCase(), 4, 0.4, () => {
+          animateParamChange(idArrow, 'opacity', 5);
+          showElem(idArrow);
+          flags[0] = false;
+        });
+      }
+    });
+  } else if (type === '3') {
+    const bubble = data[0];
+    dateLines = data[1].toUpperCase().split('/');
+    hideElem('dt-arrow1');
+    hideElem('dt-arrow2');
+    setParam('dt-text2', 'display', 'none');
+    setParam('dt-text3', 'display', 'block');
+  } else if (type === '4') {
+    hideElem('dt-arrow1');
+    hideElem('dt-arrow2');
   }
-
-  // setParam('html', 'cursor', 'none');
-  // if (scene3 === '') {
-  //   setParam('nv-var3', 'display', 'none');
-  // } else {
-  //   setParam('nv-var3', 'display', 'flex');
-  //   setInnerHTML('nv-var3-txt', scene3.split('/')[1].toUpperCase());
-  //   document.getElementById('nv-var3').onclick = () => {
-  //     customNextScenePath = scene3.split('/')[0];
-  //     endScene06();
-  //   };
-  // }
-
-  // document.getElementById('nv-var1').onclick = () => {
-  //   customNextScenePath = scene1.split('/')[0];
-  //   endScene06();
-  // };
-  // document.getElementById('nv-var2').onclick = () => {
-  //   customNextScenePath = scene2.split('/')[0];
-  //   endScene06();
-  // };
-
-  // setInnerHTML('nv-var1-txt', scene1.split('/')[1].toUpperCase());
-  // setInnerHTML('nv-var2-txt', scene2.split('/')[1].toUpperCase());
-
-  // setParam('nv-variants', 'left', '-600px');
-  // setParam('nv-choice-hand', 'bottom', '-200px');
-  // setParam('nv-choice-head', 'right', '-400px');
-  // animateParamChange('nv-choice-bg', 'opacity', 5, '', 0, 1, 0.1)
-  // showElem('nv-choice');
-  // animateParamChange('nv-variants', 'left', 1, 'px', -600, 0, 0.05, () => {
-  //   animateParamChange('nv-variants', 'left', 2, 'px', 0, -18.75, 0.05);
-  // });
-  // animateParamChange('nv-choice-head', 'right', 3, 'px', -480, 0, 0.05, () => {
-  //   animateParamChange('nv-choice-head', 'right', 4, 'px', 0, -18.75, 0.05, () => {
-  //     animateParamChange('nv-choice-hand', 'bottom', 5, 'px', -200, 0, 0.07);
-  //   });
-  // });
-  // flags[0] = false;
 };
 
 const drawScene = (scene) => {
@@ -616,15 +647,17 @@ const loop = () => {
   requestAnimationFrame(loop);
 };
 
-const animateArrow = () => {
-  const arrow = document.getElementById('nv-arrow');
+const animateArrow = (id) => {
+  const arrow = document.getElementById(id);
   const startPos = Number(window.getComputedStyle(arrow).bottom.slice(0, -2));
-  animateLoopParamChange('nv-arrow', 'bottom', 'px', startPos, 2);
+  animateLoopParamChange(id, 'bottom', 'px', startPos, 2);
 };
 
 const startDemonstration = () => {
   setZoom;
-  animateArrow();
+  animateArrow('nv-arrow');
+  animateArrow('dt-arrow1');
+  animateArrow('dt-arrow2');
   const startScreen = document.getElementById('start-screen');
   hideElem('nv-bubble');
   readFile('003', () => { 
