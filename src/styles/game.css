@@ -4,7 +4,6 @@
 }
 
 div[id^="cell_"] {
-    border: 1px solid #000;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -14,20 +13,23 @@ div[id^="cell_"] {
 }
 
 .closed {
-    background: #d0d0d0;
+    background-color: #ffffff;
 }
 
 .open {
-    background: #ffffff;
+    background-color: transparent;
     cursor: default;
+    background-color: #b9b9b9;
+    background-image: url("../images/interface/game/t-r-b-l.png");
+    background-size: cover;
 }
 
 .flag {
-    background: #4972bd;
+    background-color: #4972bd;
 }
 
 .bomb {
-    background: #d73543;
+    background-color: #d73543;
 }
 
 .empty {

@@ -84,17 +84,26 @@ body {
 }
 
 #days-screen{
-    background-color: cyan;
+    background-image: url('../images/interface/days-screen/bg.png');
+    background-size: cover;
     z-index: 2100;
 }
 .active-day{
-    width: 50px;
-    height: 50px;
-    background-color: antiquewhite;
+    position: absolute;
+    width: 40px;
+    height: 40px;
 }
 .active-day:hover{
-    background-color: red;
+    background-image: url('../images/interface/days-screen/circle.gif');
     cursor: pointer;
+}
+#day1{
+    top: 172px;
+    left: 219px;
+}
+#day17{
+    top: 224px;
+    left: 284px;
 }
 
 .bubble {
@@ -303,7 +312,7 @@ body {
     width: 800px;
     height: 350px;
     top: 50px;
-    background-color: aqua;
+    background-color: #ffffff;
     display: flex;
     justify-content: center;
     align-items: center;
