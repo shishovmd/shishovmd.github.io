@@ -294,7 +294,7 @@ class Sapper {
     cell.innerText = count;
     switch (count) {
       case 1:
-        cell.style.color = 'blue';
+        cell.innerHTML = '<div class="one"></div>';
         break;
       case 2:
         cell.style.color = 'green';
@@ -344,7 +344,7 @@ class Sapper {
   };
 
   formatBgArr (arr) {
-    return arr.map((item) => `url("./src/images/interface/game/${item}.png")`).join(', ');
+    return arr.reverse().map((item) => `url("./src/images/interface/game/${item}.png")`).join(', ');
   };
 
   /**
@@ -356,11 +356,7 @@ class Sapper {
       return;
     }
     const [t, tr, r, br, b, bl, l, tl] = this.getNearArr(Number(id.split('_')[1]));
-    const imgArr = [];
-    if (!t && !tr && !r && !br && !b && !bl && !l && !tl) {
-      el.style.backgroundImage = 'none';
-      return;
-    }
+    const imgArr = ['0'];
     if (t) {
       if (r) {
         if (b) {
