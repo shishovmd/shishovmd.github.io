@@ -97,14 +97,14 @@ class Sapper {
         this.handEvent = 'win';
       }
   
-      console.log(Math.ceil(this.gameProgress) + '% open'); // Показывает прогресс
-      console.log(this.health + ' health left'); // Показывает "здоровье"
-      console.log('last cell is - ' + this.lastCell); // Показывает последнюю тыкнутую клетку
+      //console.log(Math.ceil(this.gameProgress) + '% open'); // Показывает прогресс
+      //console.log(this.health + ' health left'); // Показывает "здоровье"
+      //console.log('last cell is - ' + this.lastCell); // Показывает последнюю тыкнутую клетку
   
       this.gameData.setAttribute('cells-closed', `${Math.ceil(this.gameProgress)}`);
-      this.gameData.setAttribute('event', `${this.handEvent}`);
+      this.gameData.setAttribute('game-event', `${this.handEvent}`);
       this.gameData.setAttribute('curr-health', `${this.health}`);
-      // this.gameData.onclick();
+      this.gameData.onclick();
     };
   
     rmc (event) {
@@ -132,9 +132,10 @@ class Sapper {
         this.handEvent = 'win';
       }
   
-      this.gameData.setAttribute('event', `${this.handEvent}`);
+      this.gameData.setAttribute('game-event', `${this.handEvent}`);
+      this.gameData.onclick();
   
-      console.log('last cell is - ' + this.lastCell); // Показывает последнюю тыкнутую клетку
+      //console.log('last cell is - ' + this.lastCell); // Показывает последнюю тыкнутую клетку
     };
   
     bombGenerator (safe) {
@@ -336,11 +337,11 @@ class Sapper {
     };
   
     setCellBg (id) {
-        console.log(id);
+        //console.log(id);
         const arr = this.getNearArr(id);
         const el = document.getElementById(id);
         //el.style.backgroundImage = 'url("../images/interface/game/t-r-b-l.png")';
-        console.log(arr[2]);
+        //console.log(arr[2]);
     };
   
     getNearArr (id) {

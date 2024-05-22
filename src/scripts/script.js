@@ -455,14 +455,14 @@ const drawScene06 = (longType, scene1, scene2, scene3) => {
     animateParamChange('nv-choice-bg', 'opacity', 5, '', 1, 0, 0.1, () => {
       hideElem('nv-choice');
       setParam('nv-choice', 'zIndex', '-1000');
-      setParam('html', 'cursor', 'default');
+      //setParam('html', 'cursor', 'default');
       drawNext = true;
     });
     flags[1] = false;
   };
 
   flags[0] = true;
-  setParam('html', 'cursor', 'none');
+  //setParam('html', 'cursor', 'none');
   if (scene3 === '') {
     setParam('nv-var3', 'display', 'none');
   } else {
@@ -504,6 +504,10 @@ const drawScene06 = (longType, scene1, scene2, scene3) => {
 };
 
 
+const drawBoom = (id, runAfter = () => {}) => {
+  runAfter();
+
+};
 
 let positiveOutcomeWay = '';
 let neutralOutcomeWay = '';
@@ -520,19 +524,33 @@ const getGameData = () => {
   cellsOpened = Number(gameData.getAttribute('cells-closed'));
   gameEvent = gameData.getAttribute('game-event');
   currHealth = Number(gameData.getAttribute('curr-health'));
-  if (cellsOpened === 100) {
-    customNextScenePath = positiveOutcomeWay;
+  console.log(currHealth, gameEvent, cellsOpened)
+  if (gameEvent === 'win') {
+    if (currHealth >= 2) {
+      customNextScenePath = positiveOutcomeWay;
+    } else {
+      customNextScenePath = neutralOutcomeWay;
+    }
     drawNext = true;
     return;
-  } 
+  }
+  if (gameEvent.split(';')[0] === 'boom') {
+      drawBoom(gameEvent.split(';')[0], () => {
+        customNextScenePath = negAnswer;
+        drawNext = true;
+      });
+      return;
+  }
+  if (gameEvent.split(';')[0] === 'loose') {
+    drawBoom(gameEvent.split(';')[0], () => {
+      customNextScenePath = negativeOutcomeWay;
+      drawNext = true;
+    });
+    return;
+  }
   if (cellsOpened >= needsToOpen) {
     console.log(posAnswer);
     customNextScenePath = posAnswer;
-    drawNext = true;
-    return;
-  } 
-  if (gameEvent === 'loose') {
-    customNextScenePath = positiveOutcomeWay;
     drawNext = true;
     return;
   }

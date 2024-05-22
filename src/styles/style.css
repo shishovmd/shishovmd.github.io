@@ -36,6 +36,10 @@ body {
     align-items: center;
     font-size: 16px;
     background-color: #000000;
+
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 #protector{
@@ -102,8 +106,8 @@ body {
     left: 219px;
 }
 #day17{
-    top: 224px;
-    left: 284px;
+    top: 199px;
+    left: 254px;
 }
 
 .bubble {
@@ -217,6 +221,7 @@ body {
 #nv-choice{
     visibility: hidden;
     z-index: -1000;
+    cursor: none;
 }
 #nv-choice-bg{
     background-color: #000000;
