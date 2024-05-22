@@ -96,7 +96,7 @@ class Sapper {
       this.handEvent = 'win';
     }
 
-    console.log(this.getNearArr(cellEl.num)); // Показывает результат GetNearArr
+    // console.log(this.getNearArr(cellEl.num)); // Показывает результат GetNearArr
     // console.log(Math.ceil(this.gameProgress) + '% open'); // Показывает прогресс
     // console.log(this.health + ' health left'); // Показывает "здоровье"
     // console.log('last cell is - ' + this.lastCell); // Показывает последнюю нажатую клетку
@@ -249,10 +249,6 @@ class Sapper {
    */
   setClass (cellEl, newClass) {
     cellEl.className = newClass;
-    if (newClass === 'open') {
-      const currId = cellEl.id;
-      this.setCellBg(currId);
-    }
   };
 
   checkWin () {
@@ -347,15 +343,149 @@ class Sapper {
     }
   };
 
+  formatBgArr (arr) {
+    return arr.map((item) => `url("./src/images/interface/game/${item}.png")`).join(', ');
+  };
+
+  /**
+   * Устанавливает изображение на фон ячейки
+   */
   setCellBg (id) {
-    //console.log(id);
-    const [t, tr, r, br, b, bl, l, tl] = this.getNearArr(Number(id.split('_')[1]));
     const el = document.getElementById(id);
-    el.style.backgroundImage = 'url("./src/images/interface/game/t-r-b-l.png")';
-    if (!t && !tr && !r && !br && !b && !bl && !l && !tl) {
-      console.log('yes')
-      el.style.backgroundImage = 'none';
+    if (el.className !== 'open') {
+      return;
     }
+    const [t, tr, r, br, b, bl, l, tl] = this.getNearArr(Number(id.split('_')[1]));
+    const imgArr = [];
+    if (!t && !tr && !r && !br && !b && !bl && !l && !tl) {
+      el.style.backgroundImage = 'none';
+      return;
+    }
+    if (t) {
+      if (r) {
+        if (b) {
+          if (l) {
+            imgArr.push('t-r-b-l')
+            el.style.backgroundImage = this.formatBgArr(imgArr);
+            return;
+          }
+          imgArr.push('t-r-b')
+          el.style.backgroundImage = this.formatBgArr(imgArr);
+          return;
+        }
+        if (l) {
+          imgArr.push('t-r-l')
+          el.style.backgroundImage = this.formatBgArr(imgArr);
+          return;
+        }
+        if (bl) {
+          imgArr.push('bl');
+        }
+        imgArr.push('t-r');
+        el.style.backgroundImage = this.formatBgArr(imgArr);
+        return;
+      }
+      if (l) {
+        if (b) {
+          imgArr.push('t-b-l')
+          el.style.backgroundImage = this.formatBgArr(imgArr);
+          return;
+        }
+        if (br) {
+          imgArr.push('br');
+        }
+        imgArr.push('t-l');
+        el.style.backgroundImage = this.formatBgArr(imgArr);
+        return;
+      }
+      imgArr.push('t');
+      if (b) {
+        imgArr.push('b');
+        el.style.backgroundImage = this.formatBgArr(imgArr);
+        return;
+      }
+      if (br) {
+        imgArr.push('br');
+      }
+      if (bl) {
+        imgArr.push('bl');
+      }
+      el.style.backgroundImage = this.formatBgArr(imgArr);
+      return;
+    }
+    if (r) {
+      if (b) {
+        if (l) {
+          imgArr.push('r-b-l');
+          el.style.backgroundImage = this.formatBgArr(imgArr);
+          return;
+        }
+        if (tl) {
+          imgArr.push('tl');
+        }
+        imgArr.push('b-r');
+        el.style.backgroundImage = this.formatBgArr(imgArr);
+        return;
+      }
+      imgArr.push('r');
+      if (l) {
+        imgArr.push('l');
+        el.style.backgroundImage = this.formatBgArr(imgArr);
+        return;
+      }
+      if (tl) {
+        imgArr.push('tl');
+      }
+      if (bl) {
+        imgArr.push('bl');
+      }
+      el.style.backgroundImage = this.formatBgArr(imgArr);
+      return;
+    }
+    if (l) {
+      if (b) {
+        if (tr) {
+          imgArr.push('tr');
+        }
+        imgArr.push('b-l');
+        el.style.backgroundImage = this.formatBgArr(imgArr);
+        return;
+      }
+      imgArr.push('l');
+      if (tr) {
+        imgArr.push('tr');
+      }
+      if (br) {
+        imgArr.push('br');
+      }
+      el.style.backgroundImage = this.formatBgArr(imgArr);
+      return;
+    }
+    if (b) {
+      imgArr.push('b');
+      if (tr) {
+        imgArr.push('tr');
+      }
+      if (tl) {
+        imgArr.push('tl');
+      }
+      el.style.backgroundImage = this.formatBgArr(imgArr);
+      return;
+    }
+    if (tr) {
+      imgArr.push('tr');
+    }
+    if (tl) {
+      imgArr.push('tl');
+    }
+    if (br) {
+      imgArr.push('br');
+    }
+    if (bl) {
+      imgArr.push('bl');
+    }
+    el.style.backgroundImage = this.formatBgArr(imgArr);
+    return;
   };
 
   /**
@@ -372,7 +502,7 @@ class Sapper {
 
     for (const num of this.getNearCells(id)[0]) {
 
-      if (num === 'empty' || this.getCellById(num).className === 'closed') {
+      if (num === 'empty' || num === 0 || this.getCellById(num).className !== 'open') {
         flat.push(1);
       } else {
         flat.push(0);
@@ -380,6 +510,24 @@ class Sapper {
     }
 
     return flat;
+  };
+
+  /**
+   * Динамически обновляет вид открытыхячеек
+   */
+  updateCellBg () {
+    const requestAnimationFrame = window.requestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.msRequestAnimationFrame;
+    const updateBg = () => {
+      for (let i = 1; i <= this.fieldSize; i++) {
+        this.setCellBg(`cell_${i}`);
+      }
+      if (getComputedStyle(document.getElementById('date-screen')).visibility === 'visible')
+      requestAnimationFrame(updateBg);
+    };
+    updateBg(); 
   };
 
   /**
@@ -397,6 +545,7 @@ class Sapper {
 }
   
 const startSapper = () => {
-  const sapper = new Sapper(12, 25);
+  const sapper = new Sapper(12, 24);
   sapper.init();
+  sapper.updateCellBg();
 };
