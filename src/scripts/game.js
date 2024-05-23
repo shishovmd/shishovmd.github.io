@@ -63,7 +63,7 @@ class Sapper {
       this.firsClick = false;
     }
 
-    if (cellEl.className !== 'open' && cellEl.className !== 'flag') {
+    if (cellEl.className !== 'open' && cellEl.className !== 'flag' && cellEl.className !== 'bomb') {
       if (cell.bomb) {
         this.health -= 1;
         this.lastCell = cellEl.num;
@@ -118,7 +118,7 @@ class Sapper {
     const cellEl = event.target;
     this.lastCell = cellEl.num;
 
-    if (cellEl.className !== 'open') {
+    if (cellEl.className !== 'open' && cellEl.className !== 'bomb') {
       if (cellEl.className !== 'flag') {
         this.setClass(cellEl, 'flag');
       } else {
@@ -509,7 +509,7 @@ class Sapper {
   };
 
   /**
-   * Динамически обновляет вид открытыхячеек
+   * Динамически обновляет вид открытых ячеек
    */
   updateCellBg () {
     const requestAnimationFrame = window.requestAnimationFrame ||
@@ -523,7 +523,7 @@ class Sapper {
       if (getComputedStyle(document.getElementById('date-screen')).visibility === 'visible')
       requestAnimationFrame(updateBg);
     };
-    updateBg(); 
+    updateBg();
   };
 
   /**
@@ -539,7 +539,7 @@ class Sapper {
     }
   };
 }
-  
+
 const startSapper = () => {
   const sapper = new Sapper(12, 24);
   sapper.init();
