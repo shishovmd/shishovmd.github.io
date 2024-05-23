@@ -7,7 +7,6 @@ div[id^="cell_"] {
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
     font-size: 16px;
     font-weight: bold;
     position: relative;
@@ -18,9 +17,11 @@ div[id^="cell_"] {
     height: 100%;
     background-image: url("../images/interface/game/1.png");
     background-size: cover;
+    pointer-events: none;
 }
 
 .closed {
+    cursor: pointer;
     background-color: #ffffff;
 }
 

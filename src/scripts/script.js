@@ -3,6 +3,14 @@ const requestAnimationFrame = window.requestAnimationFrame ||
   window.webkitRequestAnimationFrame ||
   window.msRequestAnimationFrame;
 
+const findFirstIndex = (subStr, arr) => {
+  for (let i = 0; i < arr.length; i += 1) {
+    if (arr[i].split('_')[0].trim() === subStr) {
+      return i;
+    }
+  }
+};
+
 let fileLines = [];
 let currScene = '';
 let currLine = 0;
@@ -21,10 +29,10 @@ const readFile = (name, runAfter = () => {}) => {
 const getNextScene = (runAfter = () => {}) => {
   let nextScenePath;
   if (customNextScenePath !== '') {
-    nextScenePath = customNextScenePath;
+    nextScenePath = customNextScenePath.trim();
     customNextScenePath = '';
   } else {
-    nextScenePath = currScene.split('_')[0];
+    nextScenePath = currScene.split('_')[1].trim();
   }
 
   if (nextScenePath === '') {
@@ -34,14 +42,14 @@ const getNextScene = (runAfter = () => {}) => {
     return;
   }
   if (nextScenePath.includes(';')) {
-    readFile(nextScenePath.split(';')[0], () => {
-      currLine = Number(nextScenePath.split(';')[1]) - 1;
+    readFile(nextScenePath.split(';')[1], () => {
+      currLine = findFirstIndex(nextScenePath.split(';')[0], fileLines);
       currScene = fileLines[currLine];
       runAfter();
     });
     return;
   }
-  currLine = Number(nextScenePath) - 1;
+  currLine = findFirstIndex(nextScenePath, fileLines);
   currScene = fileLines[currLine];
   runAfter();
 };
@@ -526,24 +534,21 @@ const getGameData = () => {
   currHealth = Number(gameData.getAttribute('curr-health'));
   console.log(currHealth, gameEvent, cellsOpened)
   if (gameEvent === 'win') {
-    if (currHealth >= 2) {
-      customNextScenePath = positiveOutcomeWay;
-    } else {
-      customNextScenePath = neutralOutcomeWay;
-    }
+    customNextScenePath = posAnswer;
     drawNext = true;
     return;
   }
   if (gameEvent.split(';')[0] === 'boom') {
-      drawBoom(gameEvent.split(';')[0], () => {
+      drawBoom(gameEvent.split(';')[1], () => {
         customNextScenePath = negAnswer;
         drawNext = true;
       });
       return;
   }
   if (gameEvent.split(';')[0] === 'loose') {
-    drawBoom(gameEvent.split(';')[0], () => {
-      customNextScenePath = negativeOutcomeWay;
+    drawBoom(gameEvent.split(';')[1], () => {
+      customNextScenePath = negAnswer;
+      gameEvent = 'loose';
       drawNext = true;
     });
     return;
@@ -558,6 +563,17 @@ const getGameData = () => {
 
 const drawScene07 = (longType, ...data) => {
   flags[0] = true;
+  if (gameEvent === 'win') {
+    if (currHealth >= 2) {
+      customNextScenePath = positiveOutcomeWay;
+    } else {
+      customNextScenePath = neutralOutcomeWay;
+    }
+  } else if (gameEvent === 'loose') {
+    customNextScenePath = negativeOutcomeWay;
+    console.log(customNextScenePath);
+  }
+  gameEvent = '';
   const type = longType.split('-')[1];
 
   setParam('dt-text2', 'display', 'block');
@@ -568,7 +584,6 @@ const drawScene07 = (longType, ...data) => {
     positiveOutcomeWay = data[1];
     neutralOutcomeWay = data[2];
     negativeOutcomeWay = data[3];
-    document.getElementById('start-game').onclick();
     hideElem('dt-blackout');
     hideElem('dt-bubble1');
     hideElem('dt-bubble2');
@@ -579,6 +594,7 @@ const drawScene07 = (longType, ...data) => {
     animateParamChange('dt-bg', 'opacity', 5, '', 0, 1, 0.1);
     setParam('date-screen', 'zIndex', '1000');
     showElem('date-screen');
+    document.getElementById('start-game').onclick();
     animateParamChange('dt-char1', 'left', 1, 'px', -400, -180, 0.05, () => {
       animateParamChange('dt-char1', 'left', 2, 'px', -180, -200, 0.05);
     });
@@ -675,38 +691,38 @@ const drawScene99 = (longType) => {
 
 const drawScene = (scene) => {
   setParam('nv-no-clicks', 'zIndex', 2000);
-  const type = scene.split('_')[1]
+  const type = scene.split('_')[2].trim()
 
   animateParamChange('nv-bubble', 'opacity', 1, '', 1, 0, 0.1, () => {
     hideElem('nv-bubble');
     hideElem('nv-arrow');
     switch (type.split('-')[0]) {
       case '00':
-        drawScene00(...scene.split('_').slice(1));
+        drawScene00(...scene.split('_').slice(2).map((item) => item.trim()));
         break;
       case '01':
-        drawScene01(...scene.split('_').slice(1));
+        drawScene01(...scene.split('_').slice(2).map((item) => item.trim()));
         break;
       case '02':
-        drawScene02(...scene.split('_').slice(1));
+        drawScene02(...scene.split('_').slice(2).map((item) => item.trim()));
         break;
       case '03':
-        drawScene03(...scene.split('_').slice(1));
+        drawScene03(...scene.split('_').slice(2).map((item) => item.trim()));
         break;
       case '04':
-        drawScene04(...scene.split('_').slice(1));
+        drawScene04(...scene.split('_').slice(2).map((item) => item.trim()));
         break;
       case '05':
-        drawScene05(...scene.split('_').slice(1));
+        drawScene05(...scene.split('_').slice(2).map((item) => item.trim()));
         break;
       case '06':
-        drawScene06(...scene.split('_').slice(1));
+        drawScene06(...scene.split('_').slice(2).map((item) => item.trim()));
         break;
       case '07':
-        drawScene07(...scene.split('_').slice(1));
+        drawScene07(...scene.split('_').slice(2).map((item) => item.trim()));
         break;
       case '99':
-        drawScene99(...scene.split('_').slice(1));
+        drawScene99(...scene.split('_').slice(2).map((item) => item.trim()));
         break;
       default:
         console.log('Error!')
@@ -748,6 +764,7 @@ const loop = () => {
     drawNext = false;
     setParam('nv-no-clicks', 'zIndex', 1100);
     getNextScene(() => {
+      console.log(currScene);
       drawScene(currScene);
     });
   }

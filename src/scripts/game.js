@@ -22,13 +22,13 @@ class Sapper {
     this.mainGridEl.style.gridTemplateColumns = `repeat(${this.fieldLine}, 25px)`;
     this.mainGridEl.style.gridTemplateRows = `repeat(${this.fieldLine}, 25px)`;
 
-    this.mainGridEl.innerHTMLn = '';
+    this.mainGridEl.innerHTML = '';
 
     for (let i = 0; i < this.fieldSize; i++) {
       const divEl = document.createElement('div');
 
       divEl.className = 'closed';
-      divEl.id = `cell_${i + 1}`;
+      divEl.id = `cell_${i + 1}`; 
       divEl.num = i + 1;
 
       divEl.addEventListener('click', (event) => this.leftMouseClick(event));
@@ -102,7 +102,7 @@ class Sapper {
     // console.log('last cell is - ' + this.lastCell); // Показывает последнюю нажатую клетку
 
     this.gameData.setAttribute('cells-closed', `${Math.ceil(this.gameProgress)}`);
-    this.gameData.setAttribute('event', `${this.handEvent}`);
+    this.gameData.setAttribute('game-event', `${this.handEvent}`);
     this.handEvent = '';
     this.gameData.setAttribute('curr-health', `${this.health}`);
     this.gameData.onclick();
@@ -132,7 +132,7 @@ class Sapper {
       this.handEvent = 'win';
     }
 
-    this.gameData.setAttribute('event', `${this.handEvent}`);
+    this.gameData.setAttribute('game-event', `${this.handEvent}`);
     this.gameData.onclick();
 
     // console.log('last cell is - ' + this.lastCell); // Показывает последнюю нажатую клетку
@@ -517,7 +517,9 @@ class Sapper {
     window.webkitRequestAnimationFrame ||
     window.msRequestAnimationFrame;
     const updateBg = () => {
-      for (let i = 1; i <= this.fieldSize; i++) {
+      console.log(this.fieldSize);
+      console.log(getComputedStyle(document.getElementById('date-screen')).visibility);
+      for (let i = 1; i <= this.fieldSize; i += 1) {
         this.setCellBg(`cell_${i}`);
       }
       if (getComputedStyle(document.getElementById('date-screen')).visibility === 'visible')
@@ -541,7 +543,7 @@ class Sapper {
 }
 
 const startSapper = () => {
-  const sapper = new Sapper(12, 24);
+  const sapper = new Sapper(15, 36);
   sapper.init();
   sapper.updateCellBg();
 };
