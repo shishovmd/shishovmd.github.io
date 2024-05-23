@@ -5,14 +5,14 @@ const requestAnimationFrame = window.requestAnimationFrame ||
 
 const findFirstIndex = (subStr, arr) => {
   for (let i = 0; i < arr.length; i += 1) {
-    if (arr[i].split('_')[0].trim() === subStr) {
+    if (arr[i][0] === subStr) {
       return i;
     }
   }
 };
 
 let fileLines = [];
-let currScene = '';
+let currScene = [];
 let currLine = 0;
 let customNextScenePath = '';
 
@@ -21,7 +21,7 @@ const readFile = (name, runAfter = () => {}) => {
   fetch(`./src/scenes/${name}.txt`)
   .then(response => response.text())
   .then(text => { 
-    fileLines = text.split('\n').map((line) => line.trim());
+    fileLines = text.split('\n').map((line) => line.split('_').map((item) => item.trim()));
     runAfter();
   });
 };
@@ -29,10 +29,10 @@ const readFile = (name, runAfter = () => {}) => {
 const getNextScene = (runAfter = () => {}) => {
   let nextScenePath;
   if (customNextScenePath !== '') {
-    nextScenePath = customNextScenePath.trim();
+    nextScenePath = customNextScenePath;
     customNextScenePath = '';
   } else {
-    nextScenePath = currScene.split('_')[1].trim();
+    nextScenePath = currScene[1];
   }
 
   if (nextScenePath === '') {
@@ -42,8 +42,8 @@ const getNextScene = (runAfter = () => {}) => {
     return;
   }
   if (nextScenePath.includes(';')) {
-    readFile(nextScenePath.split(';')[1], () => {
-      currLine = findFirstIndex(nextScenePath.split(';')[0], fileLines);
+    readFile(nextScenePath.split(';')[0], () => {
+      currLine = findFirstIndex(nextScenePath.split(';')[1], fileLines);
       currScene = fileLines[currLine];
       runAfter();
     });
@@ -523,24 +523,26 @@ let negativeOutcomeWay = '';
 
 let stepsAmount = 0;
 let currGameStep = 0;
-let needsToOpen = [];
+let needsToOpen = 0;
 let posAnswer = '';
 let negAnswer = '';
 let cellsOpened = 0;
 let gameEvent = '';
 let currHealth = 0;
+let bombsOpened = 0;
 const getGameData = () => {
   const gameData = document.getElementById('game-data');
   cellsOpened = Number(gameData.getAttribute('cells-closed'));
   gameEvent = gameData.getAttribute('game-event');
   currHealth = Number(gameData.getAttribute('curr-health'));
-  console.log(currGameStep, needsToOpen);
+  console.log(cellsOpened, needsToOpen);
   if (gameEvent === 'win') {
     customNextScenePath = posAnswer;
     drawNext = true;
     return;
   }
   if (gameEvent.split(';')[0] === 'boom') {
+    bombsOpened += 1;
       drawBoom(gameEvent.split(';')[1], () => {
         customNextScenePath = negAnswer;
         drawNext = true;
@@ -555,8 +557,8 @@ const getGameData = () => {
     });
     return;
   }
-  if (cellsOpened >= needsToOpen[currGameStep]) {
-    currGameStep += 1;
+  if (cellsOpened >= needsToOpen) {
+    console.log('yes')
     customNextScenePath = posAnswer;
     drawNext = true;
     return;
@@ -566,7 +568,7 @@ const getGameData = () => {
 const drawScene07 = (longType, ...data) => {
   flags[0] = true;
   if (gameEvent === 'win') {
-    if (currHealth >= 2) {
+    if (bombsOpened <= 1) {
       customNextScenePath = positiveOutcomeWay;
     } else {
       customNextScenePath = neutralOutcomeWay;
@@ -579,15 +581,14 @@ const drawScene07 = (longType, ...data) => {
   const type = longType.split('-')[1];
 
   setParam('dt-text2', 'display', 'block');
-  setParam('dt-text3', 'display', 'none');
 
   if (type === '0') {
     const [char1, char2] = data[0].split(';');
-    needsToOpen = data[1].split(';').map((item) => Number(item));
-    currGameStep = 0;
-    positiveOutcomeWay = data[2];
-    neutralOutcomeWay = data[3];
-    negativeOutcomeWay = data[4];
+    bombsOpened = 0;
+    document.getElementById('game-data').setAttribute('curr-health', '1');
+    positiveOutcomeWay = data[1];
+    neutralOutcomeWay = data[2];
+    negativeOutcomeWay = data[3];
     hideElem('dt-blackout');
     hideElem('dt-bubble1');
     hideElem('dt-bubble2');
@@ -641,15 +642,15 @@ const drawScene07 = (longType, ...data) => {
       }
     });
   } else if (type === '3') {
-    const bubble = data[0];
-    dateLines = data[1].toUpperCase().split('/');
-    hideElem('dt-arrow1');
-    hideElem('dt-arrow2');
-    setParam('dt-text2', 'display', 'none');
-    setParam('dt-text3', 'display', 'block');
+    const gameData = document.getElementById('game-data');
+    currHealth = Number(gameData.getAttribute('curr-health'));
+    gameData.setAttribute('curr-health', `${currHealth + 1}`);
+    drawNext = true;
   } else if (type === '4') {
-    posAnswer = data[0];
-    negAnswer = data[1];
+    console.log(data);
+    needsToOpen = Number(data[0]);
+    posAnswer = data[1];
+    negAnswer = data[2];
     hideElem('dt-arrow1');
     hideElem('dt-arrow2');
     hideElem('dt-blackout');
@@ -693,38 +694,38 @@ const drawScene99 = (longType) => {
 
 const drawScene = (scene) => {
   setParam('nv-no-clicks', 'zIndex', 2000);
-  const type = scene.split('_')[2].trim()
+  const type = scene[2];
 
   animateParamChange('nv-bubble', 'opacity', 1, '', 1, 0, 0.1, () => {
     hideElem('nv-bubble');
     hideElem('nv-arrow');
     switch (type.split('-')[0]) {
       case '00':
-        drawScene00(...scene.split('_').slice(2).map((item) => item.trim()));
+        drawScene00(...scene.slice(2));
         break;
       case '01':
-        drawScene01(...scene.split('_').slice(2).map((item) => item.trim()));
+        drawScene01(...scene.slice(2));
         break;
       case '02':
-        drawScene02(...scene.split('_').slice(2).map((item) => item.trim()));
+        drawScene02(...scene.slice(2));
         break;
       case '03':
-        drawScene03(...scene.split('_').slice(2).map((item) => item.trim()));
+        drawScene03(...scene.slice(2));
         break;
       case '04':
-        drawScene04(...scene.split('_').slice(2).map((item) => item.trim()));
+        drawScene04(...scene.slice(2));
         break;
       case '05':
-        drawScene05(...scene.split('_').slice(2).map((item) => item.trim()));
+        drawScene05(...scene.slice(2));
         break;
       case '06':
-        drawScene06(...scene.split('_').slice(2).map((item) => item.trim()));
+        drawScene06(...scene.slice(2));
         break;
       case '07':
-        drawScene07(...scene.split('_').slice(2).map((item) => item.trim()));
+        drawScene07(...scene.slice(2));
         break;
       case '99':
-        drawScene99(...scene.split('_').slice(2).map((item) => item.trim()));
+        drawScene99(...scene.slice(2));
         break;
       default:
         console.log('Error!')
@@ -766,7 +767,6 @@ const loop = () => {
     drawNext = false;
     setParam('nv-no-clicks', 'zIndex', 1100);
     getNextScene(() => {
-      console.log(currScene);
       drawScene(currScene);
     });
   }

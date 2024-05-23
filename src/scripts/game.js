@@ -47,6 +47,7 @@ class Sapper {
     if (this.isGameOver) {
       return false;
     }
+    this.health = Number(this.gameData.getAttribute('curr-health'));
 
     const cellEl = event.target;
     const cell = this.field[cellEl.num];
@@ -63,9 +64,12 @@ class Sapper {
       this.firsClick = false;
     }
 
+    console.log(this.health);
     if (cellEl.className !== 'open' && cellEl.className !== 'flag' && cellEl.className !== 'bomb') {
       if (cell.bomb) {
         this.health -= 1;
+        this.gameData.setAttribute('curr-health', `${this.health}`);
+        console.log(this.health);
         this.lastCell = cellEl.num;
 
         if (this.health < 0) {
@@ -332,15 +336,15 @@ class Sapper {
 
     this.gameProgress = openCells / (this.fieldSize - this.bombCount) * 100;
 
-    if (this.gameProgress >= 50 && this.fifty) {
-      this.fifty = false;
-      this.health++;
-    }
+    // if (this.gameProgress >= 50 && this.fifty) {
+    //   this.fifty = false;
+    //   this.health++;
+    // }
 
-    if (this.gameProgress >= 75 && this.seventyFive) {
-      this.seventyFive = false;
-      this.health++;
-    }
+    // if (this.gameProgress >= 75 && this.seventyFive) {
+    //   this.seventyFive = false;
+    //   this.health++;
+    // }
   };
 
   formatBgArr (arr) {
