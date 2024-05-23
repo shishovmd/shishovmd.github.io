@@ -517,8 +517,6 @@ class Sapper {
     window.webkitRequestAnimationFrame ||
     window.msRequestAnimationFrame;
     const updateBg = () => {
-      console.log(this.fieldSize);
-      console.log(getComputedStyle(document.getElementById('date-screen')).visibility);
       for (let i = 1; i <= this.fieldSize; i += 1) {
         this.setCellBg(`cell_${i}`);
       }

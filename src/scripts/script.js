@@ -521,7 +521,9 @@ let positiveOutcomeWay = '';
 let neutralOutcomeWay = '';
 let negativeOutcomeWay = '';
 
-let needsToOpen = 0;
+let stepsAmount = 0;
+let currGameStep = 0;
+let needsToOpen = [];
 let posAnswer = '';
 let negAnswer = '';
 let cellsOpened = 0;
@@ -532,7 +534,7 @@ const getGameData = () => {
   cellsOpened = Number(gameData.getAttribute('cells-closed'));
   gameEvent = gameData.getAttribute('game-event');
   currHealth = Number(gameData.getAttribute('curr-health'));
-  console.log(currHealth, gameEvent, cellsOpened)
+  console.log(currGameStep, needsToOpen);
   if (gameEvent === 'win') {
     customNextScenePath = posAnswer;
     drawNext = true;
@@ -553,8 +555,8 @@ const getGameData = () => {
     });
     return;
   }
-  if (cellsOpened >= needsToOpen) {
-    console.log(posAnswer);
+  if (cellsOpened >= needsToOpen[currGameStep]) {
+    currGameStep += 1;
     customNextScenePath = posAnswer;
     drawNext = true;
     return;
@@ -581,9 +583,11 @@ const drawScene07 = (longType, ...data) => {
 
   if (type === '0') {
     const [char1, char2] = data[0].split(';');
-    positiveOutcomeWay = data[1];
-    neutralOutcomeWay = data[2];
-    negativeOutcomeWay = data[3];
+    needsToOpen = data[1].split(';').map((item) => Number(item));
+    currGameStep = 0;
+    positiveOutcomeWay = data[2];
+    neutralOutcomeWay = data[3];
+    negativeOutcomeWay = data[4];
     hideElem('dt-blackout');
     hideElem('dt-bubble1');
     hideElem('dt-bubble2');
@@ -644,10 +648,8 @@ const drawScene07 = (longType, ...data) => {
     setParam('dt-text2', 'display', 'none');
     setParam('dt-text3', 'display', 'block');
   } else if (type === '4') {
-    console.log(data);
-    needsToOpen = Number(data[0]);
-    posAnswer = data[1];
-    negAnswer = data[2];
+    posAnswer = data[0];
+    negAnswer = data[1];
     hideElem('dt-arrow1');
     hideElem('dt-arrow2');
     hideElem('dt-blackout');
