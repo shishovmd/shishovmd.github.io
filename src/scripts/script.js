@@ -513,8 +513,32 @@ const drawScene06 = (longType, scene1, scene2, scene3) => {
 
 
 const drawBoom = (id, runAfter = () => {}) => {
-  runAfter();
-
+  setParam('nv-no-clicks', 'zIndex', '2600');
+  const boomFolder = 'boom1';
+  let timer = 0;
+  let nextFrame = 5;
+  let i = 1;
+  const cell = document.getElementById(id);
+  cell.innerHTML = '<div id="dt-boom"></div>';
+  const boom = document.getElementById('dt-boom');  
+  const animation = () => {
+    if (i > 14) {
+      cell.innerHTML = '';
+      runAfter();
+      setParam('nv-no-clicks', 'zIndex', '1000');
+      return;
+    }
+    timer += 1;
+    //el.className = `boom${i}`;
+    boom.style.backgroundImage = `url("./src/images/interface/game/${boomFolder}/${i}.png")`;
+    if (timer > nextFrame) {
+      i += 1;
+      timer = 0;
+      //el.style.backgroundImage = `url("./src/images/interface/game/${boomFolder}/${i-1}.png"), url("./src/images/interface/game/${boomFolder}/${i}.png")`;
+    }
+    requestAnimationFrame(animation);
+  }
+  animation();
 };
 
 let positiveOutcomeWay = '';
@@ -543,10 +567,10 @@ const getGameData = () => {
   }
   if (gameEvent.split(';')[0] === 'boom') {
     bombsOpened += 1;
-      drawBoom(gameEvent.split(';')[1], () => {
-        customNextScenePath = negAnswer;
-        drawNext = true;
-      });
+    drawBoom(gameEvent.split(';')[1], () => {
+      customNextScenePath = negAnswer;
+      drawNext = true;
+    });
       return;
   }
   if (gameEvent.split(';')[0] === 'loose') {

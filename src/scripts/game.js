@@ -73,10 +73,10 @@ class Sapper {
         this.lastCell = cellEl.num;
 
         if (this.health < 0) {
-          this.handEvent = `loose;cell${this.lastCell}`;
+          this.handEvent = `loose;cell_${this.lastCell}`;
           this.gameLose();
         } else {
-          this.handEvent = `boom;cell${this.lastCell}`;
+          this.handEvent = `boom;cell_${this.lastCell}`;
         }
 
         this.setClass(cellEl, 'bomb');
@@ -277,7 +277,7 @@ class Sapper {
 
   gameLose () {
     this.isGameOver = true;
-    alert('Game over! You lose.');
+    //alert('Game over! You lose.');
 
     for (const cell in this.field) {
       const el = document.getElementById(`cell_${cell}`);
@@ -291,7 +291,7 @@ class Sapper {
 
   gameWin () {
     this.isGameOver = true;
-    alert('Game over! Tou win');
+    //alert('Game over! Tou win');
   };
 
   showCount (cell, count) {
