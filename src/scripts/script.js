@@ -108,79 +108,106 @@ setBg = (id, bg) => {
   }
 }
 
-const animateParamChange = (id, param, i, units = '', start = 0, end = 1, speed = 0.2, runAfter = () => {}) => {
+const animateParamChange = (id, param, i, units = '', start = 0, end = 1, time = 1, runAfter = () => {}) => {
   flags[i] = true;
   const elem = document.getElementById(id);
   elem.style[param] = `${start}${units}`;
 
-  const step = (end - start) * speed;
-  const trustEnd = [end - step, end + step].sort((a, b) => a - b);
-  let curr = start;
+  let currPos = start;
+  let startTime = performance.now();
+  let timeDiff = 0;
 
   const animation = () => {
-    if (curr > trustEnd[0] && curr < trustEnd[1]) {
+    timeDiff = performance.now() - startTime;
+
+    if (timeDiff >= time * 1000) {
       elem.style[param] = `${end}${units}`;
       runAfter();
       flags[i] = false;
       return;
     }
-    curr += step;
-    elem.style[param] = `${curr}${units}`;
+  
+    currPos = start + (end - start) * (timeDiff / (time * 1000));
+    elem.style[param] = `${currPos}${units}`;
     requestAnimationFrame(animation);
   }
   animation();
 };
 
-const animateParamChangeNoFlags = (id, param, units = '', start = 0, end = 1, speed = 0.2, runAfter = () => {}) => {
+const animateParamChangeNoFlags = (id, param, units = '', start = 0, end = 1, time = 1, runAfter = () => {}) => {
   const elem = document.getElementById(id);
   elem.style[param] = `${start}${units}`;
 
-  const step = (end - start) * speed;
-  const trustEnd = [end - step, end + step].sort((a, b) => a - b);
-  let curr = start;
+  let currPos = start;
+  let startTime = performance.now();
+  let timeDiff = 0;
 
   const animation = () => {
-    if (curr > trustEnd[0] && curr < trustEnd[1]) {
+    timeDiff = performance.now() - startTime;
+
+    if (timeDiff >= time * 1000) {
       elem.style[param] = `${end}${units}`;
       runAfter();
       return;
     }
-    curr += step;
-    elem.style[param] = `${curr}${units}`;
+  
+    currPos = start + (end - start) * (timeDiff / time);
+    elem.style[param] = `${currPos}${units}`;
     requestAnimationFrame(animation);
   }
   animation();
 };
 
-const animateParamJump = (id, param, i, units = '', start = 0, range = 1, speed = 0.2, runAfter = () => {}) => {
-  animateParamChange(id, param, i, units, start, start + range, speed, () => {
-    animateParamChange(id, param, i, units, start + range, start, speed, runAfter());
+const animateParamJump = (id, param, i, units = '', start = 0, range = 1, time = 1, runAfter = () => {}) => {
+  animateParamChange(id, param, i, units, start, start + range, time / 2, () => {
+    animateParamChange(id, param, i, units, start + range, start, time / 2 , runAfter());
   });
 };
 
-const animateLoopParamChange = (id, param, units = '', start = 0, range = 2, speed = 0.2) => {
+var loopMult = 1;
+window.onblur = function(){  
+  loopMult = 0; 
+}  
+window.onfocus = function(){  
+  loopMult = 1;
+}
+const animateLoopParamChange = (id, param, units = '', start = 0, end = 2, time = 1) => {
   const elem = document.getElementById(id);
-  const step = range * speed;
-  let currPos = 0;
-  let currStep = step;
+  let currStart = start;
+  let currEnd = end;
+  let tmp;
+
+  let currPos = start;
+  let startTime = performance.now();
+  let timeDiff = 0;
 
   const animation = () => {
-    if (currPos > range) currStep = -step;
-    if (currPos < -range) currStep = step;
-    currPos += currStep;
-    elem.style[param] = `${start + currPos}${units}`;
+    timeDiff = performance.now() - startTime;
+
+    if (timeDiff >= time * 1000) {
+      elem.style[param] = `${currEnd}${units}`;
+      startTime = performance.now();
+      tmp = currEnd;
+      currEnd = currStart;
+      currStart = tmp;
+    } else {
+      currPos = currStart + (currEnd - currStart) * (timeDiff / (time * 1000));
+      elem.style[param] = `${currPos}${units}`;
+    }
     requestAnimationFrame(animation);
   }
   animation();
 };
 
-const animateTextIn = (id, text, i, step = 0.4, runAfter = () => {}) => {
+const animateTextIn = (id, text, i, speed = 50, runAfter = () => {}) => {
   flags[i] = true;
   hideElem('nv-arrow');
   textSkip = false;
   setParam('nv-text-skip', 'zIndex', 2100);
   const elem = document.getElementById(id);
 
+  let prewTime = performance.now();
+  let currTime = performance.now();
   let currPos = 0;
   let textPos = 0;
 
@@ -193,7 +220,9 @@ const animateTextIn = (id, text, i, step = 0.4, runAfter = () => {}) => {
       flags[i] = false;
       return;
     }
-    currPos += step;
+    currTime = performance.now();
+    currPos += speed * (currTime - prewTime) / 1000;
+    prewTime = currTime;
     textPos = Math.floor(currPos);
     elem.innerHTML = text.slice(0, textPos) + `<span class="hidden-text">${text.slice(textPos)}</span>`;
     requestAnimationFrame(animation);
@@ -284,11 +313,11 @@ const drawScene01 = (longType, bg, chars, bubble, text) => {
     }
     setBubble('nv-bubble', bubble);
     setInnerHTML('nv-text', '');
-    animateParamJump(charToJump, 'top', 1, 'px', 0, -10, 0.15);
-    animateParamChange('nv-bubble', 'opacity', 2, '', 0, 1, 0.1);
+    animateParamJump(charToJump, 'top', 1, 'px', 0, -10, 0.5);
+    animateParamChange('nv-bubble', 'opacity', 2, '', 0, 1, 0.5);
     showElem('nv-bubble');
-    animateTextIn('nv-text', text.toUpperCase(), 3, 0.4, () => {
-      animateParamChange('nv-arrow', 'opacity', 4);
+    animateTextIn('nv-text', text.toUpperCase(), 3, 25, () => {
+      animateParamChange('nv-arrow', 'opacity', 4, '', 0, 1, 0.5);
       showElem('nv-arrow');
       flags[0] = false;
     });
@@ -310,12 +339,12 @@ const drawScene02 = (longType, blackout) => {
   if (type === '0') {
     setParam('nv-effects', 'opacity', '0');
     showElem('nv-effects');
-    animateParamChange('nv-effects', 'opacity', 1, '', 0, 1, 0.03, () => {
+    animateParamChange('nv-effects', 'opacity', 1, '', 0, 1, 1, () => {
       drawNext = true;
       flags[0] = false;
     });
   } else if (type === '1') {
-    animateParamChange('nv-effects', 'opacity', 1, '', 1, 0, 0.03, () => {
+    animateParamChange('nv-effects', 'opacity', 1, '', 1, 0, 1, () => {
       drawNext = true;
       flags[0] = false;
       setParam('nv-effects', 'opacity', '0');
@@ -348,7 +377,7 @@ const drawScene03 = (longType, bg, chars) => {
     if (char2 === '') {
       setParam('nv-char0', 'opacity', '0');
       showElem('nv-char0');
-      animateParamChange('nv-char0', 'opacity', 1, '', 0, 1, 0.05, () => {
+      animateParamChange('nv-char0', 'opacity', 1, '', 0, 1, 0.5, () => {
         drawNext = true;
         flags[0] = false;
       });
@@ -357,8 +386,8 @@ const drawScene03 = (longType, bg, chars) => {
       setParam('nv-char2', 'opacity', '0');
       showElem('nv-char1');
       showElem('nv-char2');
-      animateParamChange('nv-char1', 'opacity', 1, '', 0, 1, 0.05);
-      animateParamChange('nv-char2', 'opacity', 2, '', 0, 1, 0.05, () => {
+      animateParamChange('nv-char1', 'opacity', 1, '', 0, 1, 0.5);
+      animateParamChange('nv-char2', 'opacity', 2, '', 0, 1, 0.5, () => {
         drawNext = true;
         flags[0] = false;
       });
@@ -367,7 +396,7 @@ const drawScene03 = (longType, bg, chars) => {
     if (char2 === '') {
       setParam('nv-char0', 'opacity', '1');
       showElem('nv-char0');
-      animateParamChange('nv-char0', 'opacity', 1, '', 1, 0, 0.05, () => {
+      animateParamChange('nv-char0', 'opacity', 1, '', 1, 0, 0.5, () => {
         hideElem('nv-char0');
         setParam('nv-char0', 'opacity', '1');
         drawNext = true;
@@ -378,11 +407,11 @@ const drawScene03 = (longType, bg, chars) => {
       setParam('nv-char2', 'opacity', '0');
       showElem('nv-char1');
       showElem('nv-char2');
-      animateParamChange('nv-char1', 'opacity', 1, '', 1, 0, 0.05, () => {
+      animateParamChange('nv-char1', 'opacity', 1, '', 1, 0, 0.5, () => {
         hideElem('nv-char1');
         setParam('nv-char1', 'opacity', '1');
       });
-      animateParamChange('nv-char2', 'opacity', 2, '', 1, 0, 0.05, () => {
+      animateParamChange('nv-char2', 'opacity', 2, '', 1, 0, 0.5, () => {
         hideElem('nv-char2');
         setParam('nv-char2', 'opacity', '1');
         drawNext = true;
@@ -410,13 +439,13 @@ const drawScene04 = (longType, bg, chars) => {
   const end = Number(getParamValue((type === '0' ? 'nv-char2' : 'nv-char1'), 'left').replace('px', ''));
   setChar('nv-char0', (type === '0' ? char2 : char1));
   showElem('nv-char0');
-  animateParamChange('nv-char0', 'left', 1, 'px', start, end, 0.05, () => {
+  animateParamChange('nv-char0', 'left', 1, 'px', start, end, 0.5, () => {
     showElem(goesToChar);
     hideElem('nv-char0');
     setParam('nv-char0', 'left', `${start}px`);
     setParam(comesInChar, 'opacity', '0');
     showElem(comesInChar);
-    animateParamChange(comesInChar, 'opacity', 2, '', 0, 1, 0.05, () => {
+    animateParamChange(comesInChar, 'opacity', 2, '', 0, 1, 0.5, () => {
       drawNext = true;
       flags[0] = false;
     });
@@ -441,10 +470,10 @@ const drawScene05 = (longType, bg, chars) => {
   const end = Number(getParamValue('nv-char0', 'left').replace('px', ''));
   hideElem('nv-char0');
   setChar('nv-char0', (type === '0' ? char2 : char1));
-  animateParamChange(goesOutChar, 'opacity', 1, '', 1, 0, 0.05, () => {
+  animateParamChange(goesOutChar, 'opacity', 1, '', 1, 0, 0.5, () => {
     hideElem(goesOutChar);
     setParam(goesOutChar, 'opacity', '1');
-    animateParamChange(movesChar, 'left', 1, 'px', start, end, 0.05, () => {
+    animateParamChange(movesChar, 'left', 1, 'px', start, end, 0.5, () => {
       showElem('nv-char0');
       hideElem(movesChar);
       setParam(movesChar, 'left', `${start}px`);
@@ -457,10 +486,10 @@ const drawScene05 = (longType, bg, chars) => {
 const drawScene06 = (longType, scene1, scene2, scene3) => {
   const endScene06 = () => {
     flags[1] =  true;
-    animateParamChange('nv-choice-head', 'right', 3, 'px', -18.75, -480, 0.05);
-    animateParamChange('nv-choice-hand', 'bottom', 4, 'px', 0, -200, 0.07);
-    animateParamChange('nv-variants', 'left', 2, 'px', -18.75, -600, 0.05);
-    animateParamChange('nv-choice-bg', 'opacity', 5, '', 1, 0, 0.1, () => {
+    animateParamChange('nv-choice-head', 'right', 3, 'px', -18.75, -480, 0.5);
+    animateParamChange('nv-choice-hand', 'bottom', 4, 'px', 0, -200, 0.5);
+    animateParamChange('nv-variants', 'left', 2, 'px', -18.75, -600, 0.5);
+    animateParamChange('nv-choice-bg', 'opacity', 5, '', 1, 0, 0.5, () => {
       hideElem('nv-choice');
       setParam('nv-choice', 'zIndex', '-1000');
       //setParam('html', 'cursor', 'default');
@@ -497,15 +526,15 @@ const drawScene06 = (longType, scene1, scene2, scene3) => {
   setParam('nv-variants', 'left', '-600px');
   setParam('nv-choice-hand', 'bottom', '-200px');
   setParam('nv-choice-head', 'right', '-400px');
-  animateParamChange('nv-choice-bg', 'opacity', 5, '', 0, 1, 0.1)
+  animateParamChange('nv-choice-bg', 'opacity', 5, '', 0, 1, 0.5)
   setParam('nv-choice', 'zIndex', '1000');
   showElem('nv-choice');
-  animateParamChange('nv-variants', 'left', 1, 'px', -600, 0, 0.05, () => {
-    animateParamChange('nv-variants', 'left', 2, 'px', 0, -18.75, 0.05);
+  animateParamChange('nv-variants', 'left', 1, 'px', -600, 0, 0.5, () => {
+    animateParamChange('nv-variants', 'left', 2, 'px', 0, -18.75, 0.25);
   });
-  animateParamChange('nv-choice-head', 'right', 3, 'px', -480, 0, 0.05, () => {
-    animateParamChange('nv-choice-head', 'right', 4, 'px', 0, -18.75, 0.05, () => {
-      animateParamChange('nv-choice-hand', 'bottom', 5, 'px', -200, 0, 0.07);
+  animateParamChange('nv-choice-head', 'right', 3, 'px', -480, 0, 0.5, () => {
+    animateParamChange('nv-choice-head', 'right', 4, 'px', 0, -18.75, 0.25, () => {
+      animateParamChange('nv-choice-hand', 'bottom', 5, 'px', -200, 0, 0.5);
     });
   });
   flags[0] = false;
@@ -515,12 +544,13 @@ const drawScene06 = (longType, scene1, scene2, scene3) => {
 const drawBoom = (id, runAfter = () => {}) => {
   setParam('nv-no-clicks', 'zIndex', '2600');
   const boomFolder = 'boom1';
-  let timer = 0;
-  let nextFrame = 5;
+  let nextFrame = 80;
   let i = 1;
   const cell = document.getElementById(id);
   cell.innerHTML = '<div id="dt-boom"></div>';
-  const boom = document.getElementById('dt-boom');  
+  const boom = document.getElementById('dt-boom');
+  let prewTime = performance.now();
+  let currTime = performance.now();
   const animation = () => {
     if (i > 14) {
       cell.innerHTML = '';
@@ -528,13 +558,11 @@ const drawBoom = (id, runAfter = () => {}) => {
       setParam('nv-no-clicks', 'zIndex', '1000');
       return;
     }
-    timer += 1;
-    //el.className = `boom${i}`;
     boom.style.backgroundImage = `url("./src/images/interface/game/${boomFolder}/${i}.png")`;
-    if (timer > nextFrame) {
+    currTime = performance.now();
+    if ( (currTime - prewTime) > nextFrame) {
       i += 1;
-      timer = 0;
-      //el.style.backgroundImage = `url("./src/images/interface/game/${boomFolder}/${i-1}.png"), url("./src/images/interface/game/${boomFolder}/${i}.png")`;
+      prewTime = currTime;
     }
     requestAnimationFrame(animation);
   }
@@ -620,15 +648,15 @@ const drawScene07 = (longType, ...data) => {
     setParam('dt-char2', 'right', '-400px');
     setChar('dt-char1', char1);
     setChar('dt-char2', char2);
-    animateParamChange('dt-bg', 'opacity', 5, '', 0, 1, 0.1);
+    animateParamChange('dt-bg', 'opacity', 5, '', 0, 1, 0.5);
     setParam('date-screen', 'zIndex', '1000');
     showElem('date-screen');
     document.getElementById('start-game').onclick();
-    animateParamChange('dt-char1', 'left', 1, 'px', -400, -180, 0.05, () => {
-      animateParamChange('dt-char1', 'left', 2, 'px', -180, -200, 0.05);
+    animateParamChange('dt-char1', 'left', 1, 'px', -400, -180, 0.5, () => {
+      animateParamChange('dt-char1', 'left', 2, 'px', -180, -200, 0.25);
     });
-    animateParamChange('dt-char2', 'right', 3, 'px', -400, -180, 0.05, () => {
-      animateParamChange('dt-char2', 'right', 4, 'px', -180, -200, 0.05, () => {
+    animateParamChange('dt-char2', 'right', 3, 'px', -400, -180, 0.5, () => {
+      animateParamChange('dt-char2', 'right', 4, 'px', -180, -200, 0.25, () => {
         drawNext = true;
         flags[0] = false;
       });
@@ -645,7 +673,7 @@ const drawScene07 = (longType, ...data) => {
     const [char, bubble, text] = data;
     hideElem(idHideArrow);
     setChar(idChar, char);
-    animateParamChange(idBubble, 'opacity', 1, '', 1, 0, 0.1, () => {
+    animateParamChange(idBubble, 'opacity', 1, '', 1, 0, 0.5, () => {
       hideElem(idArrow);
       if (text === '') {
         setInnerHTML(idText, '');
@@ -655,11 +683,11 @@ const drawScene07 = (longType, ...data) => {
       } else {
         setBubble(idBubble, bubble);
         setInnerHTML(idText, '');
-        animateParamJump(idChar, 'top', 2, 'px', 0, -10, 0.15);
-        animateParamChange(idBubble, 'opacity', 3, '', 0, 1, 0.1);
+        animateParamJump(idChar, 'top', 2, 'px', 0, -10, 0.5);
+        animateParamChange(idBubble, 'opacity', 3, '', 0, 1, 0.5);
         showElem(idBubble);
-        animateTextIn(idText, text.toUpperCase(), 4, 0.4, () => {
-          animateParamChange(idArrow, 'opacity', 5);
+        animateTextIn(idText, text.toUpperCase(), 4, 25, () => {
+          animateParamChange(idArrow, 'opacity', 0.5);
           showElem(idArrow);
           flags[0] = false;
         });
@@ -681,15 +709,15 @@ const drawScene07 = (longType, ...data) => {
     setParam('dt-blackout', 'zIndex', '0');
     setParam('date-screen', 'zIndex', '2500');
   } else if (type === '5') {
-    animateParamChange('dt-bubble1', 'opacity', 1, '', 1, 0, 0.1, () => {
+    animateParamChange('dt-bubble1', 'opacity', 1, '', 1, 0, 0.5, () => {
       hideElem('dt-bubble1');
     });
-    animateParamChange('dt-bubble2', 'opacity', 2, '', 1, 0, 0.1, () => {
+    animateParamChange('dt-bubble2', 'opacity', 2, '', 1, 0, 0.5, () => {
       hideElem('dt-bubble2');
     });
     hideElem('dt-blackout');
-    animateParamChange('dt-char2', 'right', 3, 'px', -200, -400, 0.05)
-    animateParamChange('dt-char1', 'left', 4, 'px', -200, -400, 0.05, () => {
+    animateParamChange('dt-char2', 'right', 3, 'px', -200, -400, 0.5)
+    animateParamChange('dt-char1', 'left', 4, 'px', -200, -400, 0.5, () => {
       hideElem('date-screen');
       setParam('date-screen', 'zIndex', '0');
       drawNext = true;
@@ -703,7 +731,7 @@ const drawScene99 = (longType) => {
   flags[0] = true;
   const type = longType.split('-')[1];
   if (type === '0') {
-    animateParamChange('days-screen', 'opacity', 1, '', 1, 0, 0.03, () => {
+    animateParamChange('days-screen', 'opacity', 1, '', 1, 0, 1, () => {
       setParam('days-screen', 'z-index', 0);
       hideElem('days-screen');
       drawNext = true;
@@ -712,7 +740,7 @@ const drawScene99 = (longType) => {
   } else if (type === '1') {
     setParam('days-screen', 'z-index', '2100');
     showElem('days-screen');
-    animateParamChange('days-screen', 'opacity', 1, '', 0, 1, 0.03);
+    animateParamChange('days-screen', 'opacity', 1, '', 0, 1, 1);
   }
 };
 
@@ -720,7 +748,7 @@ const drawScene = (scene) => {
   setParam('nv-no-clicks', 'zIndex', 2000);
   const type = scene[2];
 
-  animateParamChange('nv-bubble', 'opacity', 1, '', 1, 0, 0.1, () => {
+  animateParamChange('nv-bubble', 'opacity', 1, '', 1, 0, 0.5, () => {
     hideElem('nv-bubble');
     hideElem('nv-arrow');
     switch (type.split('-')[0]) {
@@ -800,7 +828,7 @@ const loop = () => {
 const animateArrow = (id) => {
   const arrow = document.getElementById(id);
   const startPos = Number(window.getComputedStyle(arrow).bottom.slice(0, -2));
-  animateLoopParamChange(id, 'bottom', 'px', startPos, 2);
+  animateLoopParamChange(id, 'bottom', 'px', startPos - 2, startPos + 2, 0.25);
 };
 
 
@@ -825,13 +853,13 @@ const startDay = (file) => {
 const startDemonstration = () => {
   loop();
   animateArrow('nv-arrow');
-  animateArrow('dt-arrow1');
-  animateArrow('dt-arrow2');
-  animateParamChangeNoFlags('protector', 'opacity', '', 1, 0, 0.03, () => {
+  //animateArrow('dt-arrow1');
+  //animateArrow('dt-arrow2');
+  animateParamChangeNoFlags('protector', 'opacity', '', 1, 0, 1, () => {
     setParam('protector', 'display', 'none');
     setParam('protector', 'zIndex', '-100');
-    animateParamChangeNoFlags('st-text', 'opacity', '', 0, 0.5, 0.05, () => {
-      animateLoopParamChange('st-text', 'opacity', '', 0.5, 0.5, 0.06);
+    animateParamChangeNoFlags('st-text', 'opacity', '', 0, 0.5, 0.5, () => {
+      //animateLoopParamChange('st-text', 'opacity', '', 0.5, 0.5, 1.5);
     });
   })
 }
