@@ -6,12 +6,15 @@
   <title>Explosive Attraction</title>
   <link rel="stylesheet" href="src/styles/style.css">
   <link rel="stylesheet" href="src/styles/game.css">
+  <link rel="stylesheet" href="src/styles/menu.css">
   <script src="./src/scripts/script.js"></script>
   <script src="./src/scripts/game.js"></script>
 </head>
 <body id="body">
   <div id="screen">
     <div id="image-keeper"></div>
+    <div id="menu-image-keeper"></div>
+
     <div id="novel-screen" class="screen-size">
       <div id="nv-char0" class="character-size"></div>
       <div id="nv-char1" class="character-size"></div>
@@ -97,11 +100,27 @@
 
     <div id="days-screen" class="screen-size">
       <div id="calendar">
-        <div id="day1" class="active-day" onclick="startDay('001')"></div>
-        <div id="day16" class="active-day" onclick="startDay('002')"></div>
+        <div id="day1" class="active-day" onclick="startDay('001')">
+          <div id="c1" class="circle"></div>
+        </div>
+        <div id="day9" class="active-day" onclick="startDay('003')">
+          <div id="c9" class="circle"></div></div>
         <div id="day17" class="active-day" onclick="startDay('003')"></div>
       </div>
-      <div id="days-text">ВЫБЕРИТЕ ДЕНЬ</div>
+      <div id="clock">
+        <div id="number1" class="clock-number"></div>
+        <div id="number2" class="clock-number"></div>
+        <div id="number3" class="clock-number"></div>
+        <div id="number4" class="clock-number"></div>
+      </div>
+      <div id="days-bubble" class="bubble">
+        <div class="text-area">
+          <div>
+            <div id="days-text" class="bubble-text">
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div id="start-screen" class="screen-size" onclick="hideStartScreen()">

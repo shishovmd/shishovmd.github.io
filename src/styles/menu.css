@@ -1,0 +1,79 @@
+.active-day{
+    position: absolute;
+    width: 30px;
+    height: 30px;
+}
+.circle {
+    width: 45px;
+    height: 45px;
+    top: -7.5px;
+    left: -7.5px;
+    position: absolute;
+    visibility: hidden;
+}
+
+.active-day:hover{
+    cursor: pointer;
+}
+.active-day:hover > .circle{
+    visibility: visible;
+}
+
+.clock-number {
+    width: 35px;
+    height: 50px;
+    position: absolute;
+    background-image: url("../images/interface/days-screen/numbers/0.png");
+    bottom: 12.5px;
+}
+#number1{
+    left: 260.5px;
+}
+#number2{
+    left: 296.5px;
+}
+#number3{
+    left: 355px;
+}
+#number4{
+    left: 391px;
+}
+
+#days-bubble{
+    background-color: transparent;
+    width: 250px;
+    top: 0px;
+    left: 400px;
+}
+
+#day1{
+    top: 177px;
+    left: 224px;
+}
+#day9{
+    top: 203px;
+    left: 259px;
+}
+
+#menu-image-keeper{
+    display: block;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    top: 200px;
+    left: 200px;
+    z-index: -1000;
+    background-image: url("../images/interface/days-screen/circle001.png"),
+    url("../images/interface/days-screen/circle002.png"),
+    url("../images/interface/days-screen/circle003.png"),
+    url("../images/interface/days-screen/numbers/0.png"),
+    url("../images/interface/days-screen/numbers/1.png"),
+    url("../images/interface/days-screen/numbers/2.png"),
+    url("../images/interface/days-screen/numbers/3.png"),
+    url("../images/interface/days-screen/numbers/4.png"),
+    url("../images/interface/days-screen/numbers/5.png"),
+    url("../images/interface/days-screen/numbers/6.png"),
+    url("../images/interface/days-screen/numbers/7.png"),
+    url("../images/interface/days-screen/numbers/8.png"),
+    url("../images/interface/days-screen/numbers/9.png"),
+}

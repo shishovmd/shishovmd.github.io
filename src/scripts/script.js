@@ -232,6 +232,7 @@ const drawScene00 = (longType, bg, chars) => {
   setBg('novel-screen', bg);
 
   hideElem('nv-blackout');
+  hideElem('nv-bubble');
   if (char1 === '') {
     hideElem('nv-char0');
     hideElem('nv-char1');
@@ -259,7 +260,7 @@ const drawScene01 = (longType, bg, chars, bubble, text) => {
   let charToJump = 'hidden-elem';
 
   setBg('novel-screen', bg);
-
+  animateParamChange('nv-bubble', 'opacity', 1, '', 1, 0, 0.2, () => {
   if (char2 === '') {
     hideElem('nv-char1');
     hideElem('nv-char2');
@@ -315,6 +316,8 @@ const drawScene01 = (longType, bg, chars, bubble, text) => {
       flags[0] = false;
     });
   }
+
+ });
 };
 
 const drawScene02 = (longType, blackout) => {
@@ -545,15 +548,15 @@ const drawBoom = (id, runAfter = () => {}) => {
   let prewTime = performance.now();
   let currTime = performance.now();
   const animation = () => {
-    if (i > 14) {
+    if (i > 15) {
       cell.innerHTML = '';
       runAfter();
       setParam('nv-no-clicks', 'zIndex', '1000');
       return;
     }
-    boom.style.backgroundImage = `url("./src/images/interface/game/${boomFolder}/${i}.png")`;
     currTime = performance.now();
     if ( (currTime - prewTime) > nextFrame) {
+      boom.style.backgroundImage = `url("./src/images/interface/game/${boomFolder}/${i}.png")`;
       i += 1;
       prewTime = currTime;
     }
@@ -680,7 +683,7 @@ const drawScene07 = (longType, ...data) => {
         animateParamChange(idBubble, 'opacity', 3, '', 0, 1, 0.2);
         showElem(idBubble);
         animateTextIn(idText, text.toUpperCase(), 4, 30, () => {
-          animateParamChange(idArrow, 'opacity', 0.1);
+          animateParamChange(idArrow, 'opacity', 5, '', 0, 1, 0.1);
           showElem(idArrow);
           flags[0] = false;
         });
@@ -719,6 +722,56 @@ const drawScene07 = (longType, ...data) => {
   }
 };
 
+const animateLoopCircle = (id) => {
+  let nextFrame = 160;
+  let i = 1;
+  const elem = document.getElementById(id);
+  let prewTime = performance.now();
+  let currTime = performance.now();
+  const animation = () => {
+    if (document.getElementById('days-screen').style.visibility === 'hidden') {
+      return;
+    }
+    if (i > 3) {
+      i = 1;
+    }
+    currTime = performance.now();
+    if ( (currTime - prewTime) > nextFrame) {
+      elem.style.backgroundImage = `url("./src/images/interface/days-screen/circle00${i}.png")`;
+      i += 1;
+      prewTime = currTime;
+    }
+    requestAnimationFrame(animation);
+  }
+  animation();
+};
+
+const setClockTime = () => {
+  const setNumbers = (arr) => {
+    for(let i = 1; i <= 4; i += 1) {
+      const elem = document.getElementById(`number${i}`);
+      elem.style.backgroundImage = `url("./src/images/interface/days-screen/numbers/${arr[i - 1]}.png")`;
+    }
+  };
+
+  let prewTime = '';
+  let currTime = '';
+  let date;
+  const animation = () => {    
+    if (document.getElementById('days-screen').style.visibility === 'hidden') {
+      return;
+    }
+    date = new Date();
+    currTime = date.toString().split(' ')[4].slice(0, 5);
+    console.log(currTime);
+    if (currTime !== prewTime) {
+      setNumbers(currTime.replace(':', '').split(''));
+      prewTime = currTime;
+    }
+    requestAnimationFrame(animation);
+  }
+  animation();
+}
 
 const drawScene99 = (longType) => {
   flags[0] = true;
@@ -731,9 +784,18 @@ const drawScene99 = (longType) => {
       flags[0] = false;
     });
   } else if (type === '1') {
+    setBubble('days-bubble', '000');
+    setInnerHTML('days-text', '');
     setParam('days-screen', 'z-index', '2100');
+    animateParamChange('days-screen', 'opacity', 1, '', 0, 1, 0.7, () => {
+      animateParamChangeNoFlags('days-bubble', 'opacity', '', 0, 1, 0.2);
+      showElem('days-bubble');
+      animateTextIn('days-text', 'Выберите день, чтобы начать.'.toUpperCase(), 3, 30);
+    });
     showElem('days-screen');
-    animateParamChange('days-screen', 'opacity', 1, '', 0, 1, 0.7);
+    animateLoopCircle('c1');
+    animateLoopCircle('c9');
+    setClockTime();
   }
 };
 
@@ -741,7 +803,6 @@ const drawScene = (scene) => {
   setParam('nv-no-clicks', 'zIndex', 2000);
   const type = scene[2];
 
-  animateParamChange('nv-bubble', 'opacity', 1, '', 1, 0, 0.2, () => {
     hideElem('nv-bubble');
     hideElem('nv-arrow');
     switch (type.split('-')[0]) {
@@ -775,7 +836,6 @@ const drawScene = (scene) => {
       default:
         console.log('Error!')
     }
-  });
 
   const wait = () => {
     if (isAllAnimationsEnded()) {
@@ -787,7 +847,7 @@ const drawScene = (scene) => {
   wait();
 };
 
-let zoom = 1;
+let zoom = 1.6;
 const setZoom = () => {
   const width = window.innerWidth;
   const height = window.innerHeight;
@@ -824,13 +884,9 @@ const animateArrow = (id) => {
   animateLoopParamChange(id, 'bottom', 'px', startPos - 2, startPos + 2, 0.25);
 };
 
-
-const makeCalendar = () => {
-  const container = document.getElementById('calendar');
-}
-
 const hideStartScreen = () => {
   //анимация
+  startDay('menu');
   setParam('start-screen', 'display', 'none');
   setParam('start-screen', 'zIndex', '-100');
 }
@@ -844,6 +900,7 @@ const startDay = (file) => {
 };
 
 const startDemonstration = () => {
+  hideElem('days-screen');
   loop();
   animateArrow('nv-arrow');
   animateArrow('dt-arrow1');
@@ -854,7 +911,7 @@ const startDemonstration = () => {
     animateParamChangeNoFlags('st-text', 'opacity', '', 0, 1, 0.5, () => {
       animateLoopParamChange('st-text', 'opacity', '', 1, 0, 0.5);
     });
-  })
+  });
 }
 
 window.onload = startDemonstration;
