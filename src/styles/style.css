@@ -114,6 +114,8 @@ body {
     
     background-color: white;
     z-index: 800;
+
+    visibility: hidden;
 }
 .text-area{
     width: 100%;
