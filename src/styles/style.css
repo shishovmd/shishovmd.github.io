@@ -99,7 +99,7 @@ body {
 .bubble {
     box-sizing: border-box;
     width: 295px;
-    height: 365.625px;
+    height: 365px;
 
     pointer-events: none;
 

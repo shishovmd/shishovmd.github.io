@@ -10,6 +10,7 @@ class Sapper {
   handEvent = '';
   lastCell;
   firsClick = true;
+  girl = document.getElementById('game-data').getAttribute('girl');
 
   constructor (fieldLine, bombCount) {
     this.fieldLine = fieldLine;
@@ -30,6 +31,7 @@ class Sapper {
       divEl.className = 'closed';
       divEl.id = `cell_${i + 1}`; 
       divEl.num = i + 1;
+      divEl.innerHTML = '<div class="frame"></div>';
 
       divEl.addEventListener('click', (event) => this.leftMouseClick(event));
       divEl.addEventListener('contextmenu', (event) => this.rightMouseClick(event));
@@ -59,7 +61,7 @@ class Sapper {
 
       this.bombGenerator(safe);
       this.calculationOfNumbers();
-      this.showBombs();
+      //this.showBombs();
 
       this.firsClick = false;
     }
@@ -295,33 +297,7 @@ class Sapper {
   };
 
   showCount (cell, count) {
-    cell.innerText = count;
-    switch (count) {
-      case 1:
-        cell.innerHTML = '<div class="one"></div>';
-        break;
-      case 2:
-        cell.style.color = 'green';
-        break;
-      case 3:
-        cell.style.color = 'red';
-        break;
-      case 4:
-        cell.style.color = 'purple';
-        break;
-      case 5:
-        cell.style.color = 'orange';
-        break;
-      case 6:
-        cell.style.color = 'cyan';
-        break;
-      case 7:
-        cell.style.color = 'yellow';
-        break;
-      case 8:
-        cell.style.color = 'black';
-        break;
-    }
+    cell.innerHTML = `<div class="number num${count}"></div><div class="frame"></div>`;
   };
 
   getProgress () {
@@ -533,15 +509,15 @@ class Sapper {
   /**
    * Показывает бомбы
    */
-  showBombs () {
-    for (let i = 1; i <= this.fieldSize; i++) {
-      const cellEl = document.getElementById(`cell_${i}`);
+  // showBombs () {
+  //   for (let i = 1; i <= this.fieldSize; i++) {
+  //     const cellEl = document.getElementById(`cell_${i}`);
 
-      if (this.field[i].bomb) {
-        cellEl.innerText = '*';
-      }
-    }
-  };
+  //     if (this.field[i].bomb) {
+  //       cellEl.innerText = '*';
+  //     }
+  //   }
+  // };
 }
 
 const startSapper = () => {
