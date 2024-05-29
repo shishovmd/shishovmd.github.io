@@ -20,24 +20,20 @@
     visibility: visible;
 }
 
-.clock-number {
-    width: 35px;
-    height: 50px;
+#clock{
+    width: 215.5px;
     position: absolute;
-    background-image: url("../images/interface/days-screen/numbers/0.png");
+    display: flex;
+    justify-content: center;
     bottom: 12.5px;
+    left: 235px;
 }
-#number1{
-    left: 260.5px;
+.clock-number {
+    width: 34.375px;
+    height: 50px;
 }
-#number2{
-    left: 296.5px;
-}
-#number3{
-    left: 355px;
-}
-#number4{
-    left: 391px;
+#dots{
+    background-image: url("../images/interface/days-screen/numbers/dots.png");
 }
 
 #days-bubble{
