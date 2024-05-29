@@ -9,6 +9,7 @@
     top: -7.5px;
     left: -7.5px;
     position: absolute;
+    pointer-events: none;
     visibility: hidden;
 }
 
