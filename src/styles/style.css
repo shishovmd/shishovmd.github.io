@@ -98,32 +98,19 @@ body {
 
 .bubble {
     box-sizing: border-box;
-    width: 300px;
-    height: 200px;
-    padding: 50px;
+    width: 295px;
+    height: 365.625px;
 
     pointer-events: none;
 
     position:absolute;
-    top: 200px;
-    left: 250px;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
-    
-    background-color: white;
-    z-index: 800;
+    align-items: center;
 
     visibility: hidden;
-}
-.text-area{
-    width: 100%;
-    height: 100px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
 }
 .text-area > div{
     position: relative;
@@ -135,6 +122,12 @@ body {
     line-height: 16px;
     color: #000000;
     text-align: center;
+    width: 100px;
+    padding-top: 2px;
+}
+
+#nv-bubble{
+    z-index: 800;
 }
 
 #nv-effects{
@@ -204,7 +197,7 @@ body {
     height: 300px;
     position: absolute;
     bottom: 0px;
-    background: linear-gradient(#00000000, #00000088);
+    background: none;
     z-index: 550;
     visibility: hidden;
 }
@@ -357,18 +350,7 @@ body {
     height: 450px;
     right: 0px;
 }
-#dt-bubble1{
-    width: 200px;
-    top: 0px;
-    left: 25px;
-}
-#dt-bubble2{
-    width: 200px;
-    top: auto;
-    left: auto;
-    bottom: 0px;
-    right: 25px;
-}
+
 #dt-text2{
     display: block;
 }

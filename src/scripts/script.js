@@ -223,7 +223,29 @@ const animateTextIn = (id, text, i, speed = 50, runAfter = () => {}) => {
   animation();
 };
 
-const setBubble = (id, type) => {};
+const setBubble = (bubbleId, textId, longType) => {
+  const bubble = document.getElementById(bubbleId);
+  const text = document.getElementById(textId);
+  const [type, top, left] = longType.split(';').map((item) => item.trim());
+  const size = type[0];
+
+  if (type.split('-')[1] === '00') {
+    bubble.style.backgroundImage = 'none';
+  } else {
+    bubble.style.backgroundImage = `url("./src/images/bubbles/${type}.png")`;
+  }
+
+  if (size === '1') {
+    text.style.width = '115px';
+  } else if (size === '2') {
+    text.style.width = '145px';
+  } else if (size === '3') {
+    text.style.width = '185px';
+  }
+
+  bubble.style.top = `${42.2 + Number(top)}px`;
+  bubble.style.left = `${252.5 + Number(left)}px`;
+};
 
 const drawScene00 = (longType, bg, chars) => {
   flags[0] = true;
@@ -305,7 +327,7 @@ const drawScene01 = (longType, bg, chars, bubble, text) => {
     } else {
       showElem('nv-blackout');
     }
-    setBubble('nv-bubble', bubble);
+    setBubble('nv-bubble', 'nv-text', bubble);
     setInnerHTML('nv-text', '');
     animateParamJump(charToJump, 'top', 1, 'px', 0, -10, 0.2);
     animateParamChange('nv-bubble', 'opacity', 2, '', 0, 1, 0.2);
@@ -583,7 +605,6 @@ const getGameData = () => {
   cellsOpened = Number(gameData.getAttribute('cells-closed'));
   gameEvent = gameData.getAttribute('game-event');
   currHealth = Number(gameData.getAttribute('curr-health'));
-  console.log(cellsOpened, needsToOpen);
   if (gameEvent === 'win') {
     customNextScenePath = posAnswer;
     drawNext = true;
@@ -606,7 +627,6 @@ const getGameData = () => {
     return;
   }
   if (cellsOpened >= needsToOpen) {
-    console.log('yes')
     customNextScenePath = posAnswer;
     drawNext = true;
     return;
@@ -623,7 +643,6 @@ const drawScene07 = (longType, ...data) => {
     }
   } else if (gameEvent === 'loose') {
     customNextScenePath = negativeOutcomeWay;
-    console.log(customNextScenePath);
   }
   gameEvent = '';
   const type = longType.split('-')[1];
@@ -677,7 +696,7 @@ const drawScene07 = (longType, ...data) => {
         drawNext = true;
         flags[0] = false;
       } else {
-        setBubble(idBubble, bubble);
+        setBubble(idBubble, idText, bubble);
         setInnerHTML(idText, '');
         animateParamJump(idChar, 'top', 2, 'px', 0, -10, 0.2);
         animateParamChange(idBubble, 'opacity', 3, '', 0, 1, 0.2);
@@ -695,7 +714,6 @@ const drawScene07 = (longType, ...data) => {
     gameData.setAttribute('curr-health', `${currHealth + 1}`);
     drawNext = true;
   } else if (type === '4') {
-    console.log(data);
     needsToOpen = Number(data[0]);
     posAnswer = data[1];
     negAnswer = data[2];
@@ -763,7 +781,6 @@ const setClockTime = () => {
     }
     date = new Date();
     currTime = date.toString().split(' ')[4].slice(0, 5);
-    console.log(currTime);
     if (currTime !== prewTime) {
       setNumbers(currTime.replace(':', '').split(''));
       prewTime = currTime;
@@ -780,11 +797,12 @@ const drawScene99 = (longType) => {
     animateParamChange('days-screen', 'opacity', 1, '', 1, 0, 0.7, () => {
       setParam('days-screen', 'z-index', 0);
       hideElem('days-screen');
+      hideElem('days-bubble');
       drawNext = true;
       flags[0] = false;
     });
   } else if (type === '1') {
-    setBubble('days-bubble', '000');
+    setBubble('days-bubble', 'days-text', '1-06;-100;52');
     setInnerHTML('days-text', '');
     setParam('days-screen', 'z-index', '2100');
     animateParamChange('days-screen', 'opacity', 1, '', 0, 1, 0.7, () => {

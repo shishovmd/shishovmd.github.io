@@ -36,13 +36,6 @@
     background-image: url("../images/interface/days-screen/numbers/dots.png");
 }
 
-#days-bubble{
-    background-color: transparent;
-    width: 250px;
-    top: 0px;
-    left: 400px;
-}
-
 #day1{
     top: 177px;
     left: 224px;
