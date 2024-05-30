@@ -300,8 +300,7 @@ body {
 #dt-game{
     position: absolute;
     width: 800px;
-    height: 350px;
-    top: 50px;
+    height: 450px;
     background-color: #ffffff86;
     display: flex;
     justify-content: center;
@@ -359,6 +358,10 @@ body {
 }
 #dt-blackout{
     background-color: #00000088;
+    visibility: hidden;
+}
+#dt-effects{
+    background-color: #000000;
     visibility: hidden;
 }
 

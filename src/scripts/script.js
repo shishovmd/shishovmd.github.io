@@ -164,6 +164,12 @@ const animateParamJump = (id, param, i, units = '', start = 0, range = 1, time =
   });
 };
 
+const animateParamJumpNoFlags = (id, param, units = '', start = 0, range = 1, time = 1, runAfter = () => {}) => {
+  animateParamChangeNoFlags(id, param, units, start, start + range, time / 2, () => {
+    animateParamChangeNoFlags(id, param, units, start + range, start, time / 2 , runAfter());
+  });
+};
+
 const animateLoopParamChange = (id, param, units = '', start = 0, end = 2, time = 1) => {
   const elem = document.getElementById(id);
   let currStart = start;
@@ -560,18 +566,11 @@ const drawScene06 = (longType, scene1, scene2, scene3) => {
 
 
 const drawBoom = (id, runAfter = () => {}) => {
-  setParam('nv-no-clicks', 'zIndex', '2600');
-  const boomFolder = 'boom1';
-  let nextFrame = 80;
-  let i = 1;
-  const cell = document.getElementById(id);
-  cell.innerHTML = '<div id="dt-boom"></div>';
-  const boom = document.getElementById('dt-boom');
-  let prewTime = performance.now();
-  let currTime = performance.now();
   const animation = () => {
     if (i > 15) {
       cell.innerHTML = '';
+      setParam('dt-bubble1', 'zIndex', 'initial');
+      setParam('dt-bubble2', 'zIndex', 'initial');
       runAfter();
       setParam('nv-no-clicks', 'zIndex', '1000');
       return;
@@ -584,7 +583,29 @@ const drawBoom = (id, runAfter = () => {}) => {
     }
     requestAnimationFrame(animation);
   }
-  animation();
+
+  setParam('nv-no-clicks', 'zIndex', '2600');
+  setParam('dt-effects', 'opacity', '1');
+  showElem('dt-effects');
+  setParam('dt-bubble1', 'zIndex', '3000');
+  setParam('dt-bubble2', 'zIndex', '3000');
+  const boomFolder = 'boom1';
+  let nextFrame = 84;
+  let i = 1;
+  const cell = document.getElementById(id);
+  cell.innerHTML = '<div id="dt-boom"></div>';
+  const boom = document.getElementById('dt-boom');
+  let prewTime = performance.now();
+  let currTime = performance.now();
+    animation();
+    animateParamJumpNoFlags('dt-game', 'top', 'px', 0, 30, 0.2, () => {
+      animateParamChangeNoFlags('dt-effects', 'opacity', '', 1, 0, 1.5, () => {
+        hideElem('dt-effects');
+      });
+      animateParamJumpNoFlags('dt-game', 'top', 'px', 0, 10, 0.5);
+    });
+    
+
 };
 
 let positiveOutcomeWay = '';
