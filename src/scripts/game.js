@@ -29,7 +29,7 @@ class Sapper {
       const divEl = document.createElement('div');
 
       divEl.className = 'closed';
-      divEl.id = `cell_${i + 1}`; 
+      divEl.id = `cell_${i + 1}`;
       divEl.num = i + 1;
       divEl.innerHTML = '<div class="frame"></div>';
 
@@ -87,6 +87,7 @@ class Sapper {
       } else {
         this.setClass(cellEl, 'open');
         this.lastCell = cellEl.num;
+        this.handEvent = 'open';
 
         if (cell.count) {
           this.showCount(cellEl, cell.count);
@@ -512,7 +513,7 @@ class Sapper {
   // showBombs () {
   //   for (let i = 1; i <= this.fieldSize; i++) {
   //     const cellEl = document.getElementById(`cell_${i}`);
-
+  //
   //     if (this.field[i].bomb) {
   //       cellEl.innerText = '*';
   //     }
