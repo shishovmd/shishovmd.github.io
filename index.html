@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Explosive Attraction</title>
   <link rel="stylesheet" href="src/styles/style.css">
+  <link rel="stylesheet" href="src/styles/start.css">
   <link rel="stylesheet" href="src/styles/game.css">
   <link rel="stylesheet" href="src/styles/menu.css">
   <script src="./src/scripts/script.js"></script>
@@ -36,6 +37,7 @@
         <div id="dt-bg" class="screen-size"></div>
         <div id="dt-game">
           <div id="main_grid" class="grid"></div>
+          <div id="decorative-grid"></div>
         </div>
         <div id="dt-blackout" class="screen-size"></div>
         <div id="dt-effects" class="screen-size"></div>
@@ -125,11 +127,11 @@
     </div>
 
     <div id="start-screen" class="screen-size" onclick="hideStartScreen()">
-      <div id="st-explosion"></div>
-      <div id="st-eyes"></div>
-      <div id="st-char"></div>
-      <div id="st-text">ЩЁЛКНИТЕ, ЧТОБЫ НАЧАТЬ</div>
+      <div id="st-image-keeper"></div>
+      <div id="st-boom"></div>
+      <div id="st-click" class="screen-size" onclick="hideStartScreen()"></div>
     </div>
+    <div id="st-flame" class="screen-size"></div>
   </div>
 
   <div id="protector">

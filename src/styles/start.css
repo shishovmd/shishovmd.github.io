@@ -1,0 +1,48 @@
+#start-screen{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    z-index: 2500;
+    background-image: url("../images/interface/start/bg.png");
+}
+#st-click:hover{
+    cursor: pointer;
+}
+
+#st-flame{
+    z-index: 2500;
+    pointer-events: none;
+}
+#st-boom{
+    width: 600px;
+    height: 530px;
+    position: absolute;
+    left: -100px;
+    bottom: 0px;
+    background-image: url('../images/interface/start/boom2/1.png');
+}
+
+#st-image-keeper{
+    display: block;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    top: -200px;
+    left: -200px;
+    z-index: -1000;
+    background-image: url("../images/interface/start/boom2/1.png"),
+    url("../images/interface/start/boom2/2.png"),
+    url("../images/interface/start/boom2/3.png"),
+    url("../images/interface/start/boom2/4.png"),
+    url("../images/interface/start/boom2/5.png"),
+    url("../images/interface/start/boom2/6.png"),
+    url("../images/interface/start/boom2/7.png"),
+    url("../images/interface/start/boom2/8.png"),
+    url("../images/interface/start/boom2/9.png"),
+    url("../images/interface/start/boom2/10.png"),
+    url("../images/interface/start/boom2/11.png"),
+    url("../images/interface/start/boom2/12.png"),
+    url("../images/interface/start/boom2/13.png"),
+    url("../images/interface/start/boom2/14.png");
+}

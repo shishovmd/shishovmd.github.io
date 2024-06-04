@@ -31,7 +31,7 @@ class Sapper {
       divEl.className = 'closed';
       divEl.id = `cell_${i + 1}`;
       divEl.num = i + 1;
-      divEl.innerHTML = '<div class="frame"></div>';
+      divEl.innerHTML = `<div class="frame" style="background-image: url('./src/images/interface/game/frame${this.girl}.png')"></div>`;
 
       divEl.addEventListener('click', (event) => this.leftMouseClick(event));
       divEl.addEventListener('contextmenu', (event) => this.rightMouseClick(event));
@@ -67,7 +67,7 @@ class Sapper {
     }
 
     console.log(this.health);
-    if (cellEl.className !== 'open' && cellEl.className !== 'flag' && cellEl.className !== 'bomb') {
+    if (cellEl.className !== 'open' && !cellEl.className.includes('flag') && cellEl.className !== 'bomb') {
       if (cell.bomb) {
         this.health -= 1;
         this.gameData.setAttribute('curr-health', `${this.health}`);
@@ -126,8 +126,8 @@ class Sapper {
     this.lastCell = cellEl.num;
 
     if (cellEl.className !== 'open' && cellEl.className !== 'bomb') {
-      if (cellEl.className !== 'flag') {
-        this.setClass(cellEl, 'flag');
+      if (!cellEl.className.includes('flag')) {
+        this.setClass(cellEl, `flag${this.girl}`);
       } else {
         this.setClass(cellEl, 'closed');
       }
@@ -282,14 +282,14 @@ class Sapper {
     this.isGameOver = true;
     //alert('Game over! You lose.');
 
-    for (const cell in this.field) {
-      const el = document.getElementById(`cell_${cell}`);
+    // for (const cell in this.field) {
+    //   const el = document.getElementById(`cell_${cell}`);
 
-      if (this.field[cell].bomb) {
-        this.setClass(el, 'bomb');
-        el.innerText = '*';
-      }
-    }
+    //   if (this.field[cell].bomb) {
+    //     this.setClass(el, 'bomb');
+    //     el.innerText = '*';
+    //   }
+    // }
   };
 
   gameWin () {
@@ -298,7 +298,7 @@ class Sapper {
   };
 
   showCount (cell, count) {
-    cell.innerHTML = `<div class="number num${count}"></div><div class="frame"></div>`;
+    cell.innerHTML = `<div class="number" style="background-image: url('./src/images/interface/game/numbers${this.girl}/${count}.png')"></div><div class="frame" style="background-image: url('./src/images/interface/game/frame${this.girl}.png')"></div>`;
   };
 
   getProgress () {

@@ -577,7 +577,7 @@ const drawBoom = (id, runAfter = () => {}) => {
     }
     currTime = performance.now();
     if ( (currTime - prewTime) > nextFrame) {
-      boom.style.backgroundImage = `url("./src/images/interface/game/${boomFolder}/${i}.png")`;
+      boom.style.backgroundImage = `url("./src/images/interface/game/boom${girl}/${i}.png")`;
       i += 1;
       prewTime = currTime;
     }
@@ -589,7 +589,7 @@ const drawBoom = (id, runAfter = () => {}) => {
   showElem('dt-effects');
   setParam('dt-bubble1', 'zIndex', '3000');
   setParam('dt-bubble2', 'zIndex', '3000');
-  const boomFolder = 'boom1';
+  const girl = document.getElementById('game-data').getAttribute('girl');
   let nextFrame = 84;
   let i = 1;
   const cell = document.getElementById(id);
@@ -647,7 +647,7 @@ const getGameData = () => {
     });
     return;
   }
-  if (cellsOpened >= needsToOpen) {
+  if (cellsOpened >= needsToOpen && gameEvent === 'open') {
     customNextScenePath = posAnswer;
     drawNext = true;
     return;
@@ -924,11 +924,77 @@ const animateArrow = (id) => {
 };
 
 const hideStartScreen = () => {
-  //анимация
-  startDay('menu');
-  setParam('start-screen', 'display', 'none');
-  setParam('start-screen', 'zIndex', '-100');
-}
+  setParam('st-click', 'display', 'none');
+  // const animation = () => {
+  //   if (i > 14) {
+  //     animateParamChangeNoFlags('start-screen', 'opacity', '', 1, 0, 0.7, () => {
+  //       console.log('yes');
+  //       startDay('menu');
+  //       setParam('start-image-keeper','display', 'none');
+  //       setParam('start-screen', 'display', 'none');
+  //       setParam('start-screen', 'zIndex', '-100');
+  //     });
+  //     return;
+  //   }
+  //   currTime = performance.now();
+  //   if ( (currTime - prewTime) > nextFrame) {
+  //     elem.style.backgroundImage = `url("./src/images/interface/start/animation1/${i}.png")`;
+  //     i += 1;
+  //     prewTime = currTime;
+  //   }
+  //   requestAnimationFrame(animation);
+  // }
+   const animationBoom = () => {
+    if (i >= boomArr.length - 1) {
+      animateParamChangeNoFlags('start-screen', 'opacity', '', 1, 0, 0.7, () => {
+        startDay('menu');
+        setParam('start-screen', 'display', 'none');
+        setParam('start-screen', 'zIndex', '-100');
+        setParam('st-image-keeper','display', 'none');
+        setParam('st-flame', 'display', 'none');
+      });
+      
+      return;
+    }
+    currTimeI = performance.now();
+    if ( (currTimeI - prewTimeI) > nextFrame) {
+      boom.style.backgroundImage = `url("./src/images/interface/start/boom2/${boomArr[i]}.png")`;
+      i += 1;
+      prewTimeI = currTimeI;
+    }
+    requestAnimationFrame(animationBoom);
+  }
+
+  const animationFlame = () => {
+    if (j >= flameArr.length - 1) {
+      
+      return;
+    }
+    currTimeJ = performance.now();
+    if ( (currTimeJ - prewTimeJ) > nextFrame) {
+      flame.style.backgroundImage = `url("./src/images/interface/start/flame2/${flameArr[j]}.png")`;
+      j += 1;
+      prewTimeJ = currTimeJ;
+      if (j === 2) {
+        
+      }
+    }
+    requestAnimationFrame(animationFlame);
+  }
+
+  const boomArr = [1, 2, 2, 2, 2, 3, 4, 6, 8, 3, 3, 3, 3, 3, 9, 10, 11, 12, 13, 14, 14];
+  const flameArr = [-1, 0, 1, 2, 3, 4, 6, 6, 6];
+  let nextFrame = 84;
+  let i = 0;
+  let j = 0;
+  let prewTimeI = performance.now();
+  let currTimeI = performance.now();
+  let prewTimeJ = performance.now();
+  let currTimeJ = performance.now();
+  const boom = document.getElementById('st-boom');
+  const flame = document.getElementById('st-flame');
+  animationBoom();
+};
 
 const startDay = (file) => {
   readFile(file, () => {
@@ -947,9 +1013,9 @@ const startDemonstration = () => {
   animateParamChangeNoFlags('protector', 'opacity', '', 1, 0, 0.5, () => {
     setParam('protector', 'display', 'none');
     setParam('protector', 'zIndex', '-100');
-    animateParamChangeNoFlags('st-text', 'opacity', '', 0, 1, 0.5, () => {
-      animateLoopParamChange('st-text', 'opacity', '', 1, 0, 0.5);
-    });
+    // animateParamChangeNoFlags('st-text', 'opacity', '', 0, 1, 0.5, () => {
+    //   animateLoopParamChange('st-text', 'opacity', '', 1, 0, 0.5);
+    // });
   });
 }
 

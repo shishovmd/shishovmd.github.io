@@ -17,22 +17,27 @@ div[id^="cell_"]:hover > .frame{
 
 .closed {
     cursor: pointer;
-    background-color: #ffffff;
+    background-color: transparent;
 }
 
 .open {
     background-color: transparent;
     cursor: default;
+    background-color: #827877;
     background-size: cover;
 }
 
-.flag {
-    background-color: #ffffff;
-    background-image: url("../images/interface/game/flag.png");
+.flag1 {
+    background-color: transparent;
+    background-image: url("../images/interface/game/flag1.png");
+}
+.flag2 {
+    background-color: transparent;
+    background-image: url("../images/interface/game/flag2.png");
 }
 
 .bomb {
-    background-color: #ffffff;
+    background-color: transparent;
     background-image: url("../images/interface/game/bomb.png");
 }
 
@@ -42,13 +47,12 @@ div[id^="cell_"]:hover > .frame{
 
 .frame {
     position: absolute;
-    top: -2.5px;
-    left: -2.5px;
-    width: 30px;
-    height: 30px;
+    top: -7.5px;
+    left: -7.5px;
+    width: 40px;
+    height: 40px;
     background-size: cover;
     pointer-events: none;
-    background-image: url("../images/interface/game/frame.png");
     z-index: 2550;
     visibility: hidden;
 }
@@ -59,28 +63,4 @@ div[id^="cell_"]:hover > .frame{
     height: 100%;
     background-size: cover;
     pointer-events: none;
-}
-.num1 {
-    background-image: url("../images/interface/game/numbers/1.png");
-}
-.num2 {
-    background-image: url("../images/interface/game/numbers/2.png");
-}
-.num3 {
-    background-image: url("../images/interface/game/numbers/3.png");
-}
-.num4 {
-    background-image: url("../images/interface/game/numbers/4.png");
-}
-.num5 {
-    background-image: url("../images/interface/game/numbers/5.png");
-}
-.num6 {
-    background-image: url("../images/interface/game/numbers/6.png");
-}
-.num7 {
-    background-image: url("../images/interface/game/numbers/7.png");
-}
-.num8 {
-    background-image: url("../images/interface/game/numbers/8.png");
 }

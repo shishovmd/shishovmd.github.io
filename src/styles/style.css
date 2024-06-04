@@ -160,20 +160,6 @@ body {
     opacity: 0;
 }
 
-#start-screen{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: pink;
-    z-index: 2500;
-}
-#start-screen:hover{
-    cursor: pointer;
-}
-#st-text{
-    opacity: 0;
-}
-
 .character-size{
     width: 400px;
     height: 500px;
@@ -299,12 +285,20 @@ body {
 }
 #dt-game{
     position: absolute;
+    top: 0px;
     width: 800px;
     height: 450px;
-    background-color: #ffffff86;
+    background-color: #a39a93;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+#decorative-grid{
+    position: absolute;
+    height: 450px;
+    width: 450px;
+    background-image: url("../images/interface/game/grid.png");
+    pointer-events: none;
 }
 #dt-boom{
     position: absolute;
@@ -312,7 +306,7 @@ body {
     height: 275px;
     top: -126px;
     left: -125px;
-    z-index: 3000;
+    z-index: 2900;
     background-size: cover;
     pointer-events: none;
 }
@@ -320,8 +314,8 @@ body {
     width: 10px;
     height: 10px;
     position: absolute;
-    top: 200px;
-    left: 200px;
+    top: -200px;
+    left: -200px;
     z-index: -1000;
     background-image: url("../images/interface/game/boom1/1.png"),
         url("../images/interface/game/boom1/2.png"),
@@ -336,7 +330,10 @@ body {
         url("../images/interface/game/boom1/11.png"),
         url("../images/interface/game/boom1/12.png"),
         url("../images/interface/game/boom1/13.png"),
-        url("../images/interface/game/boom1/14.png");
+        url("../images/interface/game/boom1/14.png"),
+        url("../images/interface/days-screen/circle001.png"),
+        url("../images/interface/days-screen/circle002.png"),
+        url("../images/interface/days-screen/circle003.png");
 }
 #dt-char1{
     position: absolute;
