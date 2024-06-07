@@ -996,6 +996,39 @@ const hideStartScreen = () => {
   animationBoom();
 };
 
+const animateLoopColorChange = (id, param, start = '00 00 00', end = 'ff ff ff', time = 1) => {
+  const elem = document.getElementById(id);
+  const parseStart = start.split(' ').map((item) => parseInt(item, 16));
+  const parseEnd = end.split(' ').map((item) => parseInt(item, 16));
+  let currStart = parseStart;
+  let currEnd = parseEnd;
+  let tmp;
+
+  let currPos = [...parseStart];
+  let startTime = performance.now();
+  let timeDiff = 0;
+
+  const animation = () => {
+    timeDiff = performance.now() - startTime;
+
+    if (timeDiff >= time * 1000) {
+      elem.style[param] = `rgb(${currEnd.join(' ')})`;
+      startTime = performance.now();
+      tmp = currEnd;
+      currEnd = currStart;
+      currStart = tmp;
+    } else {
+      for (let i = 0; i < currPos.length; i += 1){
+        currPos[i] = currStart[i] + (currEnd[i] - currStart[i]) * (timeDiff / (time * 1000));
+      }
+      elem.style[param] = `rgb(${currPos.join(' ')})`;
+      console.log(currPos)
+    }
+    requestAnimationFrame(animation);
+  }
+  animation();
+};
+
 const startDay = (file) => {
   readFile(file, () => {
     currLine = 0;
@@ -1010,6 +1043,7 @@ const startDemonstration = () => {
   animateArrow('nv-arrow');
   animateArrow('dt-arrow1');
   animateArrow('dt-arrow2');
+  //animateLoopColorChange('st-text', 'color', 'ff ff ff', 'e7 4e 7d', 1);
   animateParamChangeNoFlags('protector', 'opacity', '', 1, 0, 0.5, () => {
     setParam('protector', 'display', 'none');
     setParam('protector', 'zIndex', '-100');

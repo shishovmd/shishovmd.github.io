@@ -1,6 +1,7 @@
 #start-screen{
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: end;
     align-items: center;
     background-color: transparent;
     z-index: 2500;
@@ -18,9 +19,17 @@
     width: 600px;
     height: 530px;
     position: absolute;
-    left: -100px;
+    left: -110px;
     bottom: 0px;
     background-image: url('../images/interface/start/boom2/1.png');
+}
+#st-text{
+    font-family: 'AlumniSans';
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 16px;
+    color: #ffffff;
+    margin-bottom: 15px;
 }
 
 #st-image-keeper{
