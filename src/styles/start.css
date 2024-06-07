@@ -5,6 +5,8 @@
     align-items: center;
     background-color: transparent;
     z-index: 2500;
+    height: 480px;
+    bottom: 0px;
     background-image: url("../images/interface/start/bg.png");
 }
 #st-click:hover{

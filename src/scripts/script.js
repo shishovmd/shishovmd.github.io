@@ -961,9 +961,9 @@ const hideStartScreen = () => {
       boom.style.backgroundImage = `url("./src/images/interface/start/boom2/${boomArr[i]}.png")`;
       i += 1;
       prewTimeI = currTimeI;
-      if (i === 14) {
-        animateParamJumpNoFlags('start-screen', 'top', 'px', 0, 30, 0.2, () => {
-          animateParamJumpNoFlags('start-screen', 'top', 'px', 0, 10, 0.5);
+      if (boomArr[i] === 9) {
+        animateParamJumpNoFlags('start-screen', 'bottom', 'px', 0, -30, 0.2, () => {
+          animateParamJumpNoFlags('start-screen', 'bottom', 'px', 0, -10, 0.5);
         });
       }
     }
@@ -987,7 +987,7 @@ const hideStartScreen = () => {
     requestAnimationFrame(animationFlame);
   }
 
-  const boomArr = [1, 2, 2, 2, 2, 3, 4, 6, 8, 3, 3, 3, 3, 3, 9, 10, 11, 12, 13, 14, 14];
+  const boomArr = [1, 2, 2, 2, 2, 3, 4, 6, 6, 6, 6, 8, 3, 3, 3, 3, 3, 9, 10, 11, 12, 13, 14, 14];
   const flameArr = [-1, 0, 1, 2, 3, 4, 6, 6, 6];
   let nextFrame = 84;
   let i = 0;
