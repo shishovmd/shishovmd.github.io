@@ -919,6 +919,7 @@ const drawScene99 = (longType) => {
 };
 
 const drawScene = (scene) => {
+
   setParam('nv-no-clicks', 'zIndex', 2000);
   const type = scene[2];
 
@@ -956,7 +957,7 @@ const drawScene = (scene) => {
         drawScene99(...scene.slice(2));
         break;
       default:
-        console.log('Error!')
+        drawNext = true;
     }
 
   const wait = () => {
@@ -1008,25 +1009,7 @@ const animateArrow = (id) => {
 
 const hideStartScreen = () => {
   setParam('st-click', 'display', 'none');
-  // const animation = () => {
-  //   if (i > 14) {
-  //     animateParamChangeNoFlags('start-screen', 'opacity', '', 1, 0, 0.7, () => {
-  //       console.log('yes');
-  //       startDay('menu');
-  //       setParam('start-image-keeper','display', 'none');
-  //       setParam('start-screen', 'display', 'none');
-  //       setParam('start-screen', 'zIndex', '-100');
-  //     });
-  //     return;
-  //   }
-  //   currTime = performance.now();
-  //   if ( (currTime - prewTime) > nextFrame) {
-  //     elem.style.backgroundImage = `url("./src/images/interface/start/animation1/${i}.png")`;
-  //     i += 1;
-  //     prewTime = currTime;
-  //   }
-  //   requestAnimationFrame(animation);
-  // }
+
    const animationBoom = () => {
     if (i >= boomArr.length - 1) {
       setParam('novel-screen', 'background-color', '#ffffff');
@@ -1034,7 +1017,7 @@ const hideStartScreen = () => {
         startDay('menu');
         setParam('start-screen', 'display', 'none');
         setParam('start-screen', 'zIndex', '-100');
-        setParam('st-image-keeper','display', 'none');
+        setParam('st-image-keeper','background', 'none');
         setParam('st-flame', 'display', 'none');
       });
       
