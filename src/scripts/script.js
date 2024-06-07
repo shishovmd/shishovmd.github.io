@@ -961,6 +961,11 @@ const hideStartScreen = () => {
       boom.style.backgroundImage = `url("./src/images/interface/start/boom2/${boomArr[i]}.png")`;
       i += 1;
       prewTimeI = currTimeI;
+      if (i === 14) {
+        animateParamJumpNoFlags('start-screen', 'top', 'px', 0, 30, 0.2, () => {
+          animateParamJumpNoFlags('start-screen', 'top', 'px', 0, 10, 0.5);
+        });
+      }
     }
     requestAnimationFrame(animationBoom);
   }

@@ -83,11 +83,10 @@ body {
     background-color: black;
     overflow: hidden;
     position: relative;
-    transform: scale(1);
 }
 
 #novel-screen {
-    background-color: white;
+    background-color: black;
 }
 
 #days-screen{
