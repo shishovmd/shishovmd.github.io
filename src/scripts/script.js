@@ -159,15 +159,85 @@ const animateParamChangeNoFlags = (id, param, units = '', start = 0, end = 1, ti
 };
 
 const animateParamJump = (id, param, i, units = '', start = 0, range = 1, time = 1, runAfter = () => {}) => {
-  animateParamChange(id, param, i, units, start, start + range, time / 2, () => {
-    animateParamChange(id, param, i, units, start + range, start, time / 2 , runAfter());
-  });
+  flags[i] = true;
+  const elem = document.getElementById(id);
+  elem.style[param] = `${start}${units}`;
+
+  let currPos = start;
+  let startTime = performance.now();
+  let timeDiff = 0;
+
+  const animation2 = () => {
+    timeDiff = performance.now() - startTime;
+
+    if (timeDiff >= (time / 2) * 1000) {
+      elem.style[param] = `${start}${units}`;
+      runAfter();
+      flags[i] =  false;
+      return;
+    }
+  
+    currPos = (start + range) + (- range) * (timeDiff / ((time / 2) * 1000));
+    elem.style[param] = `${currPos}${units}`;
+    requestAnimationFrame(animation2);
+  }
+
+  const animation1 = () => {
+    timeDiff = performance.now() - startTime;
+
+    if (timeDiff >= (time / 2) * 1000) {
+      elem.style[param] = `${start+range}${units}`;
+      startTime = performance.now();
+      animation2();
+      return;
+    }
+  
+    currPos = start + range * (timeDiff / ((time / 2) * 1000));
+    elem.style[param] = `${currPos}${units}`;
+    requestAnimationFrame(animation1);
+  }
+
+  animation1();
 };
 
 const animateParamJumpNoFlags = (id, param, units = '', start = 0, range = 1, time = 1, runAfter = () => {}) => {
-  animateParamChangeNoFlags(id, param, units, start, start + range, time / 2, () => {
-    animateParamChangeNoFlags(id, param, units, start + range, start, time / 2 , runAfter());
-  });
+  const elem = document.getElementById(id);
+  elem.style[param] = `${start}${units}`;
+
+  let currPos = start;
+  let startTime = performance.now();
+  let timeDiff = 0;
+
+  const animation2 = () => {
+    timeDiff = performance.now() - startTime;
+
+    if (timeDiff >= (time / 2) * 1000) {
+      elem.style[param] = `${start}${units}`;
+      runAfter();
+      return;
+    }
+  
+    currPos = (start + range) + (- range) * (timeDiff / ((time / 2) * 1000));
+    elem.style[param] = `${currPos}${units}`;
+    requestAnimationFrame(animation2);
+  }
+
+  const animation1 = () => {
+    timeDiff = performance.now() - startTime;
+
+    if (timeDiff >= (time / 2) * 1000) {
+      elem.style[param] = `${start+range}${units}`;
+      startTime = performance.now();
+      animation2();
+      return;
+    }
+  
+    currPos = start + range * (timeDiff / ((time / 2) * 1000));
+    elem.style[param] = `${currPos}${units}`;
+    requestAnimationFrame(animation1);
+  }
+
+  animation1();
 };
 
 const animateLoopParamChange = (id, param, units = '', start = 0, end = 2, time = 1) => {
@@ -761,6 +831,16 @@ const drawScene07 = (longType, ...data) => {
   }
 };
 
+const drawScene08 = (longType) => {
+  flags[0] =  true;
+  animateParamJump('novel-screen', 'top', 1, 'px', 0, 30, 0.2, () => {
+    animateParamJump('novel-screen', 'top', 2, 'px', 0, 10, 0.5, () => {
+      drawNext = true;
+      flags[0] = false;
+    });
+  });  
+}
+
 const animateLoopCircle = (id) => {
   let nextFrame = 160;
   let i = 1;
@@ -869,6 +949,9 @@ const drawScene = (scene) => {
       case '07':
         drawScene07(...scene.slice(2));
         break;
+      case '08':
+        drawScene08(...scene.slice(2));
+        break;
       case '99':
         drawScene99(...scene.slice(2));
         break;
@@ -946,6 +1029,7 @@ const hideStartScreen = () => {
   // }
    const animationBoom = () => {
     if (i >= boomArr.length - 1) {
+      setParam('novel-screen', 'background-color', '#ffffff');
       animateParamChangeNoFlags('start-screen', 'opacity', '', 1, 0, 0.7, () => {
         startDay('menu');
         setParam('start-screen', 'display', 'none');
