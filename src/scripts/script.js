@@ -763,11 +763,11 @@ const drawScene07 = (longType, ...data) => {
     setParam('date-screen', 'zIndex', '1000');
     showElem('date-screen');
     document.getElementById('start-game').onclick();
-    animateParamChange('dt-char1', 'left', 1, 'px', -400, -180, 0.4, () => {
-      animateParamChange('dt-char1', 'left', 2, 'px', -180, -200, 0.2);
+    animateParamChange('dt-char1', 'left', 1, 'px', -400, -80, 0.4, () => {
+      animateParamChange('dt-char1', 'left', 2, 'px', -80, -100, 0.2);
     });
-    animateParamChange('dt-char2', 'right', 3, 'px', -400, -180, 0.4, () => {
-      animateParamChange('dt-char2', 'right', 4, 'px', -180, -200, 0.2, () => {
+    animateParamChange('dt-char2', 'right', 3, 'px', -400, -80, 0.4, () => {
+      animateParamChange('dt-char2', 'right', 4, 'px', -80, -100, 0.2, () => {
         drawNext = true;
         flags[0] = false;
       });

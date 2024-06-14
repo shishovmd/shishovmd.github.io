@@ -337,13 +337,17 @@ body {
 #dt-char1{
     position: absolute;
     width: 400px;
-    height: 450px;
+    height: 500px;
+    pointer-events: none;
+    top: 0px;
 }
 #dt-char2{
     position: absolute;
     width: 400px;
-    height: 450px;
+    height: 500px;
     right: 0px;
+    pointer-events: none;
+    top: 0px;
 }
 
 #dt-text2{
