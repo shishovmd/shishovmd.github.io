@@ -444,7 +444,12 @@ const drawScene02 = (longType, blackout) => {
       setParam('nv-effects', 'opacity', '0');
       hideElem('nv-effects');
     });
-  } 
+  } else if (type === '2') {
+    drawNext = true;
+    flags[0] = false;
+    setParam('nv-effects', 'opacity', '0');
+    hideElem('nv-effects');
+  }
 };
 
 const drawScene03 = (longType, bg, chars) => {
@@ -981,7 +986,7 @@ const setZoom = () => {
 
 const handMove = (e) => {
   let offset = document.getElementById('screen').getBoundingClientRect();
-  var x = (e.pageX - offset.left) / zoom;
+  var x = (e.pageX - (offset.left) * zoom) / zoom;
   const hand = document.getElementById('nv-choice-hand');
   hand.style.left = `${x - 52}px`;
 }
