@@ -61,7 +61,7 @@ class Sapper {
 
       this.bombGenerator(safe);
       this.calculationOfNumbers();
-      //this.showBombs();
+      this.showBombs();
 
       this.firsClick = false;
     }
@@ -510,15 +510,15 @@ class Sapper {
   /**
    * Показывает бомбы
    */
-  // showBombs () {
-  //   for (let i = 1; i <= this.fieldSize; i++) {
-  //     const cellEl = document.getElementById(`cell_${i}`);
-  //
-  //     if (this.field[i].bomb) {
-  //       cellEl.innerText = '*';
-  //     }
-  //   }
-  // };
+  showBombs () {
+    for (let i = 1; i <= this.fieldSize; i++) {
+      const cellEl = document.getElementById(`cell_${i}`);
+  
+      if (this.field[i].bomb) {
+        cellEl.innerText = '*';
+      }
+    }
+  };
 }
 
 const startSapper = () => {
