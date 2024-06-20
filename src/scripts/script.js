@@ -1020,7 +1020,7 @@ let zoom = 1.6;
 const setZoom = () => {
   const width = window.innerWidth;
   const height = window.innerHeight;
-  //zoom = Math.min((width / 800), (height/450));
+  zoom = Math.min((width / 800), (height/450));
   //setParam('screen', 'transform', `scale(${zoom.toFixed(2)})`);
   setParam('screen', 'zoom', `${(zoom * 100).toFixed(2)}%`);
 };
