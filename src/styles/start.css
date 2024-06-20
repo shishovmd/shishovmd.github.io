@@ -23,7 +23,7 @@
     position: absolute;
     left: -110px;
     bottom: 0px;
-    background-image: url('../images/interface/start/boom2/1.png');
+    background-image: url('../images/interface/start/boom1/1.png');
 }
 #st-text{
     font-family: 'AlumniSans';
@@ -42,18 +42,18 @@
     top: -200px;
     left: -200px;
     z-index: -1000;
-    background-image: url("../images/interface/start/boom2/1.png"),
-    url("../images/interface/start/boom2/2.png"),
-    url("../images/interface/start/boom2/3.png"),
-    url("../images/interface/start/boom2/4.png"),
-    url("../images/interface/start/boom2/5.png"),
-    url("../images/interface/start/boom2/6.png"),
-    url("../images/interface/start/boom2/7.png"),
-    url("../images/interface/start/boom2/8.png"),
-    url("../images/interface/start/boom2/9.png"),
-    url("../images/interface/start/boom2/10.png"),
-    url("../images/interface/start/boom2/11.png"),
-    url("../images/interface/start/boom2/12.png"),
-    url("../images/interface/start/boom2/13.png"),
-    url("../images/interface/start/boom2/14.png");
+    background-image: url("../images/interface/start/boom1/1.png"),
+    url("../images/interface/start/boom1/2.png"),
+    url("../images/interface/start/boom1/3.png"),
+    url("../images/interface/start/boom1/4.png"),
+    url("../images/interface/start/boom1/5.png"),
+    url("../images/interface/start/boom1/6.png"),
+    url("../images/interface/start/boom1/7.png"),
+    url("../images/interface/start/boom1/8.png"),
+    url("../images/interface/start/boom1/9.png"),
+    url("../images/interface/start/boom1/10.png"),
+    url("../images/interface/start/boom1/11.png"),
+    url("../images/interface/start/boom1/12.png"),
+    url("../images/interface/start/boom1/13.png"),
+    url("../images/interface/start/boom1/14.png");
 }

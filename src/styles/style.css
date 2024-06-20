@@ -171,10 +171,10 @@ body {
     left: 200px;
 }
 #nv-char1{
-    left: 0px;
+    left: 50px;
 }
 #nv-char2{
-    left: 400px;
+    left: 350px;
 }
 
 #nv-blackout{
@@ -291,6 +291,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-left: 10px;
 }
 #decorative-grid{
     position: absolute;
@@ -340,6 +341,7 @@ body {
     height: 500px;
     pointer-events: none;
     top: 0px;
+    z-index: 2600;
 }
 #dt-char2{
     position: absolute;
@@ -348,6 +350,11 @@ body {
     right: 0px;
     pointer-events: none;
     top: 0px;
+    z-index: 2600;
+}
+#dt-bubble1,
+#dt-bubble2{
+    z-index: 2650;
 }
 
 #dt-text2{

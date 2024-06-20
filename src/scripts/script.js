@@ -303,6 +303,8 @@ const setBubble = (bubbleId, textId, longType) => {
   const bubble = document.getElementById(bubbleId);
   const text = document.getElementById(textId);
   const [type, top, left] = longType.split(';').map((item) => item.trim());
+  bubble.style.top = `${42.2 + Number(top)}px`;
+  bubble.style.left = `${252.5 + Number(left)}px`;
   const size = type[0];
 
   if (type.split('-')[1] === '00') {
@@ -318,9 +320,6 @@ const setBubble = (bubbleId, textId, longType) => {
   } else if (size === '3') {
     text.style.width = '185px';
   }
-
-  bubble.style.top = `${42.2 + Number(top)}px`;
-  bubble.style.left = `${252.5 + Number(left)}px`;
 };
 
 const drawScene00 = (longType, bg, chars) => {
@@ -644,8 +643,8 @@ const drawBoom = (id, runAfter = () => {}) => {
   const animation = () => {
     if (i > 15) {
       cell.innerHTML = '';
-      setParam('dt-bubble1', 'zIndex', 'initial');
-      setParam('dt-bubble2', 'zIndex', 'initial');
+      setParam('dt-bubble1', 'zIndex', '2650');
+      setParam('dt-bubble2', 'zIndex', '2650');
       runAfter();
       setParam('nv-no-clicks', 'zIndex', '1000');
       return;
@@ -731,21 +730,12 @@ const getGameData = () => {
 
 const drawScene07 = (longType, ...data) => {
   flags[0] = true;
-  if (gameEvent === 'win') {
-    if (bombsOpened <= 1) {
-      customNextScenePath = positiveOutcomeWay;
-    } else {
-      customNextScenePath = neutralOutcomeWay;
-    }
-  } else if (gameEvent === 'loose') {
-    customNextScenePath = negativeOutcomeWay;
-  }
-  gameEvent = '';
   const type = longType.split('-')[1];
 
   setParam('dt-text2', 'display', 'block');
 
   if (type === '0') {
+    gameEvent = '';
     const [char1, char2] = data[0].split(';');
     bombsOpened = 0;
     document.getElementById('game-data').setAttribute('curr-health', '1');
@@ -782,9 +772,15 @@ const drawScene07 = (longType, ...data) => {
     const idArrow = type === '1' ? 'dt-arrow1' : 'dt-arrow2';
     const idHideArrow = type === '1' ? 'dt-arrow2' : 'dt-arrow1';
     const [char, bubble, text] = data;
+    const [char1, char2] = char.split(';');
     hideElem(idHideArrow);
-    setChar(idChar, char);
-    animateParamChange(idBubble, 'opacity', 1, '', 1, 0, 0.2, () => {
+    setChar('dt-char1', char1);
+    setChar('dt-char2', char2);
+    animateParamChange('dt-bubble1', 'opacity', 1, '', 1, 0, 0.2, () => {
+      hideElem('dt-bubble1');
+    });
+    animateParamChange('dt-bubble2', 'opacity', 2, '', 1, 0, 0.2, () => {
+      hideElem('dt-bubble2');
       hideElem(idArrow);
       if (text === '') {
         setInnerHTML(idText, '');
@@ -819,6 +815,20 @@ const drawScene07 = (longType, ...data) => {
     setParam('dt-blackout', 'zIndex', '0');
     setParam('date-screen', 'zIndex', '2500');
   } else if (type === '5') {
+    if (gameEvent !== 'win' && gameEvent !== 'loose') {
+      drawNext = true;
+      flags[0] = false;
+      return;
+    }
+    if (gameEvent === 'win') {
+      if (bombsOpened <= 0) {
+        customNextScenePath = positiveOutcomeWay;
+      } else {
+        customNextScenePath = neutralOutcomeWay;
+      }
+    } else if (gameEvent === 'loose') {
+      customNextScenePath = negativeOutcomeWay;
+    }
     animateParamChange('dt-bubble1', 'opacity', 1, '', 1, 0, 0.2, () => {
       hideElem('dt-bubble1');
     });
@@ -832,6 +842,38 @@ const drawScene07 = (longType, ...data) => {
       setParam('date-screen', 'zIndex', '0');
       drawNext = true;
       flags[0] = false;
+    });
+  } else if (type === '6') {
+    setParam('date-screen', 'zIndex', '1000');
+    setParam('dt-blackout', 'zIndex', 'initial');
+    showElem('dt-blackout');
+    const [char, bubble, text] = data;
+    const [char1, char2] = char.split(';');
+    hideElem('dt-arrow1');
+    hideElem('dt-arrow2');
+    setChar('dt-char1', char1);
+    setChar('dt-char2', char2);
+    animateParamChange('dt-bubble1', 'opacity', 1, '', 1, 0, 0.2, () => {
+      hideElem('dt-bubble1');
+    });
+    animateParamChange('dt-bubble2', 'opacity', 2, '', 1, 0, 0.2, () => {
+      hideElem('dt-bubble2');
+      if (text === '') {
+        setInnerHTML('dt-text1', '');
+        hideElem('dt-bubble1');
+        drawNext = true;
+        flags[0] = false;
+      } else {
+        setBubble('dt-bubble1', 'dt-text1', bubble);
+        setInnerHTML('dt-text1', '');
+        animateParamChange('dt-bubble1', 'opacity', 3, '', 0, 1, 0.2);
+        showElem('dt-bubble1');
+        animateTextIn('dt-text1', text.toUpperCase(), 4, 30, () => {
+          animateParamChange('dt-arrow1', 'opacity', 5, '', 0, 1, 0.1);
+          showElem('dt-arrow1');
+          flags[0] = false;
+        });
+      }
     });
   }
 };
@@ -918,7 +960,6 @@ const drawScene99 = (longType) => {
     });
     showElem('days-screen');
     animateLoopCircle('c1');
-    animateLoopCircle('c9');
     setClockTime();
   }
 };
@@ -1030,7 +1071,7 @@ const hideStartScreen = () => {
     }
     currTimeI = performance.now();
     if ( (currTimeI - prewTimeI) > nextFrame) {
-      boom.style.backgroundImage = `url("./src/images/interface/start/boom2/${boomArr[i]}.png")`;
+      boom.style.backgroundImage = `url("./src/images/interface/start/boom1/${boomArr[i]}.png")`;
       i += 1;
       prewTimeI = currTimeI;
       if (boomArr[i] === 9) {
