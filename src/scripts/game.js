@@ -61,7 +61,7 @@ class Sapper {
 
       this.bombGenerator(safe);
       this.calculationOfNumbers();
-      this.showBombs();
+      //this.showBombs();
 
       this.firsClick = false;
     }
