@@ -68,3 +68,48 @@ div[id^="cell_"]:hover > .frame{
     background-size: cover;
     pointer-events: none;
 }
+
+#game-image-keeper{
+    display: block;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    top: -200px;
+    left: -200px;
+    z-index: -1000;
+    background-image: url("../images/interface/game/b-l.png"),
+    url("../images/interface/game/b-r.png"),
+    url("../images/interface/game/b.png"),
+    url("../images/interface/game/bl.png"),
+    url("../images/interface/game/br.png"),
+    url("../images/interface/game/l.png"),
+    url("../images/interface/game/r-b-l.png"),
+    url("../images/interface/game/r.png"),
+    url("../images/interface/game/t-b-l.png"),
+    url("../images/interface/game/t-l.png"),
+    url("../images/interface/game/t-r-b-l.png"),
+    url("../images/interface/game/t-r-b.png"),
+    url("../images/interface/game/t-r-l.png"),
+    url("../images/interface/game/t-r.png"),
+    url("../images/interface/game/t.png"),
+    url("../images/interface/game/tl.png"),
+    url("../images/interface/game/tr.png");
+}
+
+#chars-image-keeper{
+    display: block;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    top: -200px;
+    left: -200px;
+    z-index: -1000;
+    background-image: url("../images/characters/gopnik1/1.png"),
+    url("../images/characters/gopnik1/2.png"),
+    url("../images/characters/gopnik1/3.png"),
+    url("../images/characters/gopnik1/4.png"),
+    url("../images/characters/gopnik2/1.png"),
+    url("../images/characters/gopnik2/2.png"),
+    url("../images/characters/gopnik2/3.png"),
+    url("../images/characters/gopnik2/4.png");
+}
