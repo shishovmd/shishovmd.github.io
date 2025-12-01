@@ -1,4 +1,4 @@
-# Explosive Attraction
+# Explosive Attraction [[попробовать онлайн]](https://shishovmd.github.io)
 
 **Explosive Attraction** — это интерактивная новелла, в которой игроки взаимодействуют с персонажами и принимают решения, влияющие на развитие сюжета. Проект создан с использованием HTML, CSS и JavaScript.
 
